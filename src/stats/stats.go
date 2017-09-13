@@ -47,3 +47,11 @@ func SumFloat64(a []float64) float64 {
 	}
 	return s
 }
+
+func SumValues(nums ...int) int {
+	res := 0
+	for _, v := range nums {
+		res += v
+	}
+	return res
+}
