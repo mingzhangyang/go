@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"./stats"
+	"../src/stats"
 	"os"
 	//"strconv"
 )
