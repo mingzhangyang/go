@@ -67,7 +67,7 @@ func download(url string, c chan interface{}) {
 func main() {
 	p := os.Args[1]
 	urls := readline(p)
-	c := make(chan interface{})
+	c := make(chan interface{}, len(urls))
 	for i := 0; i < len(urls); i++ {
 		go download(urls[i], c)
 	}
