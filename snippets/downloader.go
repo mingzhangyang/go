@@ -9,6 +9,8 @@ import (
 	"strings"
 	"net/http"
 	"io"
+	"time"
+	"strconv"
 )
 
 func readline(path string) []string {
@@ -39,6 +41,7 @@ func readline(path string) []string {
 }
 
 func download(url string, c chan interface{}) {
+	start := time.Now()
 	files := strings.Split(url, "/")
 	file := files[len(files) - 1]
 	out, err := os.Create(file)
@@ -60,13 +63,16 @@ func download(url string, c chan interface{}) {
 		c <- err
 		return
 	}
-	c <- n
+	var s string
+	s += (file + " [" + strconv.Itoa(int(n)) + " bytes] [" + fmt.Sprintf("%.2f s]", time.Since(start).Seconds()))
+	c <- s
 	return
 }
 
 func main() {
 	p := os.Args[1]
 	urls := readline(p)
+	begin := time.Now()
 	c := make(chan interface{}, len(urls))
 	for i := 0; i < len(urls); i++ {
 		go download(urls[i], c)
@@ -74,4 +80,5 @@ func main() {
 	for i := 0; i < len(urls); i++ {
 		fmt.Println(<-c)
 	}
+	fmt.Printf("Total time used: %.2f s\n", time.Since(begin).Seconds())
 }
