@@ -6,11 +6,12 @@ import (
 	"bufio"
 	"fmt"
 	"net/url"
-	"strings"
+	// "strings"
 	"net/http"
 	"io"
 	"time"
 	"strconv"
+	"path"
 )
 
 func readline(path string) []string {
@@ -42,8 +43,9 @@ func readline(path string) []string {
 
 func download(url string, c chan interface{}) {
 	start := time.Now()
-	files := strings.Split(url, "/")
-	file := files[len(files) - 1]
+	// files := strings.Split(url, "/")
+	// file := files[len(files) - 1]
+	file := path.Base(url)
 	out, err := os.Create(file)
 	if err != nil {
 		c <- err
