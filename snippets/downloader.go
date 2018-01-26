@@ -1,17 +1,17 @@
 package main
 
 import (
-	"os"
-	"log"
 	"bufio"
 	"fmt"
+	"log"
 	"net/url"
+	"os"
 	// "strings"
-	"net/http"
 	"io"
-	"time"
-	"strconv"
+	"net/http"
 	"path"
+	"strconv"
+	"time"
 )
 
 func readline(path string) []string {
@@ -53,7 +53,9 @@ func download(url string, c chan interface{}) {
 	}
 	defer out.Close()
 
-	resp, err := http.Get(url)
+	client := &http.Client{Timeout: 20 * time.Second}
+
+	resp, err := client.Get(url)
 	if err != nil {
 		c <- err
 		return
@@ -72,6 +74,9 @@ func download(url string, c chan interface{}) {
 }
 
 func main() {
+	if len(os.Args) == 1 {
+		log.Fatal("a file containing urls is missing ...")
+	}
 	p := os.Args[1]
 	urls := readline(p)
 	begin := time.Now()
