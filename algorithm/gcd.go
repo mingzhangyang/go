@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// Euclid exported
 func Euclid(m, n int) int {
 	if n == 0 {
 		return m
