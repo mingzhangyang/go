@@ -6,13 +6,13 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"time"
 	// "strings"
 	"io"
 	"net/http"
 	"path"
-	"strconv"
-	"time"
 	"runtime"
+	"strconv"
 )
 
 func readline(path string) []string {
@@ -89,13 +89,14 @@ func main() {
 
 	n := runtime.NumCPU()
 	// fmt.Println(n)
-	// n := 4
+	// n := 16
 	wc := make(chan *http.Client, n)
 	for i := 0; i < n; i++ {
-		go func () {
+		go func() {
 			wc <- &http.Client{Timeout: 30 * time.Second}
 		}()
 	}
+	fmt.Printf("%d http clients are created to download files.\n", n)
 	for i := 0; i < len(urls); i++ {
 		client := <-wc
 		go func(client *http.Client, url string) {
