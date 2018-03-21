@@ -1,17 +1,18 @@
 package main
 
 import (
-	"os"
-	"log"
 	"bufio"
 	"fmt"
+	"log"
 	"net/url"
-	// "strings"
-	"net/http"
-	"io"
+	"os"
 	"time"
-	"strconv"
+	// "strings"
+	"io"
+	"net/http"
 	"path"
+	"runtime"
+	"strconv"
 )
 
 func readline(path string) []string {
@@ -41,7 +42,8 @@ func readline(path string) []string {
 	return res
 }
 
-func download(url string, c chan interface{}) {
+func download(client *http.Client, url string, c chan interface{}) {
+	// fmt.Println("begin to download " + url)
 	start := time.Now()
 	// files := strings.Split(url, "/")
 	// file := files[len(files) - 1]
@@ -53,12 +55,17 @@ func download(url string, c chan interface{}) {
 	}
 	defer out.Close()
 
-	resp, err := http.Get(url)
+	resp, err := client.Get(url)
 	if err != nil {
 		c <- err
 		return
 	}
 	defer resp.Body.Close()
+	// fmt.Println(resp.StatusCode)
+	if resp.StatusCode != 200 {
+		c <- fmt.Sprintf("Downloading %s failed, status code: %d", file, resp.StatusCode)
+		return
+	}
 
 	n, err := io.Copy(out, resp.Body)
 	if err != nil {
@@ -72,15 +79,33 @@ func download(url string, c chan interface{}) {
 }
 
 func main() {
+	if len(os.Args) == 1 {
+		log.Fatal("a file containing urls is missing ...")
+	}
 	p := os.Args[1]
 	urls := readline(p)
 	begin := time.Now()
-	c := make(chan interface{}, len(urls))
+	mc := make(chan interface{}, len(urls)) // message channel
+
+	n := runtime.NumCPU()
+	// fmt.Println(n)
+	// n := 16
+	wc := make(chan *http.Client, n)
+	for i := 0; i < n; i++ {
+		go func() {
+			wc <- &http.Client{Timeout: 30 * time.Second}
+		}()
+	}
+	fmt.Printf("%d http clients are created to download files.\n", n)
 	for i := 0; i < len(urls); i++ {
-		go download(urls[i], c)
+		client := <-wc
+		go func(client *http.Client, url string) {
+			download(client, url, mc)
+			wc <- client
+		}(client, urls[i])
 	}
 	for i := 0; i < len(urls); i++ {
-		fmt.Println(<-c)
+		fmt.Println(<-mc)
 	}
 	fmt.Printf("Total time used: %.2f s\n", time.Since(begin).Seconds())
 }
