@@ -15,7 +15,7 @@ func NewNeuron(n int) *Neuron {
     s = make([]float64, n)
     for i := 0; i < n; i++ {
 //      s[i] = (rand.Float64() - 0.5) * 2
-        s[i] = math.NormFloat64()
+        s[i] = rand.NormFloat64()
     } 
     neuron.weights = s
     return &neuron
