@@ -5,13 +5,13 @@ import "math"
 type LossFunction func([][]float64, [][]float64) float64
 
 // CrossEntropy method compute the cross entropy between two vectors
-func CrossEntropyForVector(predictions, labels []float64) float64 {
-	if len(predictions) != len(labels) {
+func CrossEntropyForVector(prediction, label []float64) float64 {
+	if len(prediction) != len(label) {
 		panic("The length of prediction and label vectors don't match.")
 	}
     var r float64
     for i := 0; i < len(labels); i++ {
-        r += (labels[i] * math.Log(predictions[i]))
+        r += (label[i] * math.Log(prediction[i]))
     }
     return -r
 }
