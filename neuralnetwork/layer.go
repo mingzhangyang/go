@@ -4,12 +4,14 @@ package network
 type Layer []*Neuron
 
 // NewLayer method return a layer value
+// m is the number of neurons will be included in the layer
+// n is the number of weights every single neuron possesses
 func NewLayer(m, n int) Layer {
     var l = make([]*Neuron, m)
     for i := 0; i < m; i++ {
         l[i] = NewNeuron(n)
     }
-    return l
+    return Layer(l) // type conversion must be explicit.
 }
 
 // Length method return the length of the layer, which is the number of Neurons in the layer
