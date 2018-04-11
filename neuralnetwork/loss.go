@@ -16,9 +16,9 @@ func CrossEntropyForVector(predictions, labels []float64) float64 {
     return -r
 }
 
-// MeanCrossEntropyForMatrix method compute the mean of all the pairing vectors 
+// CrossEntropy method compute the mean of all the pairing vectors 
 // from predictions and labels (Onehot-encoded)
-func MeanCrossEntropyForMatrix(predictions, labels [][]float64) float64 {
+func CrossEntropy(predictions, labels [][]float64) float64 {
 	if len(predictions) != len(labels) {
 		panic("The length of predictions and labels matrix don't match.")
 	}

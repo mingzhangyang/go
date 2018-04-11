@@ -2,8 +2,8 @@ package network
 
 import "math"
 
-// Softmax function
-func Softmax(v []float64) []float64 {
+// SoftmaxForVector function for a vector
+func SoftmaxForVector(v []float64) []float64 {
     var r = make([]float64, len(v))
     var sum, it float64
     for i := 0; i < len(v); i++ {
@@ -15,6 +15,15 @@ func Softmax(v []float64) []float64 {
         r[i] /= sum
     }
     return r
+}
+
+// Softmax function for matrix
+func Softmax(input [][]float64) [][]float64 {
+	var r = make([][]float64, len(input))
+	for i, s := range input {
+		r[i] = SoftmaxForVector(s)
+	}
+	return r
 }
 
 // Onehot encoding function for vector

@@ -35,5 +35,6 @@ func (nn Network) FeedForward(input [][]float64) [][]float64 {
 // ComputeLoss method compute the loss
 func (nn Network) ComputeLoss(input [][]float64, labels [][]float64, fn LossFunction) float64 {
 	res := nn.FeedForward(input)
+	res = Softmax(res)
 	return fn(res, labels)
 }
