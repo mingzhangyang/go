@@ -26,7 +26,7 @@ func Softmax(input [][]float64) [][]float64 {
 	return r
 }
 
-// Onehot encoding function for vector
+// OnehotForVector encoding function for vector
 func OnehotForVector(v []float64) []float64 {
     var r float64 // r initialized to be zero if fine, because for Onehot encoding, all the values are in the domain [0, 1)
     var index int
@@ -41,7 +41,7 @@ func OnehotForVector(v []float64) []float64 {
     return s
 }
 
-// Onehot encoding function for matrix
+// OnehotForMatrix encoding function for matrix
 func OnehotForMatrix(v [][]float64) [][]float64 {
     r := make([][]float64, len(v))
     for i := 0; i < len(v); i++ {
@@ -50,7 +50,7 @@ func OnehotForMatrix(v [][]float64) [][]float64 {
     return r
 }
 
-// Create Onehot encoded labels from string labels
+// CreateOnehotEncodedLabelsFromStringLabels method does its name says
 func CreateOnehotEncodedLabelsFromStringLabels(labels []string) [][]float64 {
 	var m = make(map[string]int)
 	var idx int
@@ -69,7 +69,7 @@ func CreateOnehotEncodedLabelsFromStringLabels(labels []string) [][]float64 {
 	return r
 }
 
-// CreateOnehotEncodedLabelsFromFloat64 method create Onehot encoded labels from float64 labels
+// CreateOnehotEncodedLabelsFromFloat64Labels method create Onehot encoded labels from float64 labels
 func CreateOnehotEncodedLabelsFromFloat64Labels(labels []float64) [][]float64 {
 	var m = make(map[float64]int)
 	var idx int

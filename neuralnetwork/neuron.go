@@ -12,7 +12,7 @@ type Neuron struct {
 func NewNeuron(n int) *Neuron {
     var neuron Neuron
     neuron.bias = rand.Float64()
-    s = make([]float64, n)
+    s := make([]float64, n)
     for i := 0; i < n; i++ {
 //      s[i] = (rand.Float64() - 0.5) * 2
         s[i] = rand.NormFloat64()

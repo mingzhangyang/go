@@ -1,5 +1,6 @@
 package network
 
+// Network is a collection of hidden layers
 type Network []Layer
 
 // NewNetwork create a neural networks with the specified number of features in a single input record 
@@ -8,7 +9,7 @@ type Network []Layer
 func NewNetwork(numOfFeatures int, hidden []int) Network {
 	var nn = make([]Layer, len(hidden))
 	var numOfWeights = numOfFeatures
-	for i, s := range nn {
+	for i := range nn {
 		nn[i] = NewLayer(hidden[i], numOfWeights)
 		numOfWeights = hidden[i]
 		// in neural network, the number of neurons in a preceding layer equals the number of weights
@@ -24,7 +25,6 @@ func NewNetwork(numOfFeatures int, hidden []int) Network {
 // as the input. Of note, the number of columns of the return value should
 // be of the same length as every single onehot-encoded label
 func (nn Network) FeedForward(input [][]float64) [][]float64 {
-	var r = make([][]float64, len(input))
 	v := input
 	for _, layer := range nn {
 		v = layer.ComputeWithMatrix(v)
