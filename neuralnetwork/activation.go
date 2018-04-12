@@ -2,7 +2,7 @@ package network
 
 import "math"
 
-// ActivationFn define the type of activation functions
+// ActivationFunc define the type of activation functions
 type ActivationFunc func(float64) float64
 
 // Sigmoid activation function

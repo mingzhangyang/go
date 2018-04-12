@@ -2,7 +2,7 @@ package network
 
 import "math"
 
-// LossFunction define the type of loss functions
+// LossFunc define the type of loss functions
 type LossFunc func([][]float64, [][]float64) float64
 
 // CrossEntropyForVector method compute the cross entropy between two vectors
