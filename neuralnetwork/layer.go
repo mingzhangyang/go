@@ -19,10 +19,10 @@ func (l Layer) Length() int {
 	return len(l)
 }
 
-// SetNeuronActivationFn method set the activation function of neurons in the layer
-func (l Layer) SetNeuronActivationFn(fn ActivationFn) {
+// SetNeuronActivationFunc method set the activation function of neurons in the layer
+func (l Layer) SetNeuronActivationFunc(fn ActivationFunc) {
 	for _, n := range l {
-		n.SetActivationFn(fn)
+		n.SetActivationFunc(fn)
 	}
 }
 

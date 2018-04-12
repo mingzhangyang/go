@@ -4,9 +4,9 @@ import "math/rand"
 
 // Neuron is the computing unit
 type Neuron struct {
-	bias         float64
-	weights      []float64
-	activationFn ActivationFn
+	bias           float64
+	weights        []float64
+	activationFunc ActivationFunc
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
@@ -19,15 +19,15 @@ func NewNeuron(n int) *Neuron {
 		s[i] = rand.NormFloat64()
 	}
 	neuron.weights = s
-	neuron.activationFn = func(v float64) float64 {
+	neuron.activationFunc = func(v float64) float64 {
 		return v
 	}
 	return &neuron
 }
 
-// SetActivationFn method set the input activation function as the activationFn of the neuron
-func (n *Neuron) SetActivationFn(fn ActivationFn) {
-	n.activationFn = fn
+// SetActivationFunc method set the input activation function as the activationFn of the neuron
+func (n *Neuron) SetActivationFunc(fn ActivationFunc) {
+	n.activationFunc = fn
 }
 
 // NumOfWeights method return the length of the weights slice
@@ -44,7 +44,7 @@ func (n *Neuron) Compute(input []float64) float64 {
 	for i := 0; i < len(input); i++ {
 		r += (input[i] * n.weights[i])
 	}
-	return n.activationFn(r + n.bias)
+	return n.activationFunc(r + n.bias)
 }
 
 // Update method update the weights and bias of the neuron
