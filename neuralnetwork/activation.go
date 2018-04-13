@@ -3,6 +3,8 @@ package network
 import "math"
 
 // ActivationFunc define the type of activation functions
+// it receives an float64 number as argument and returns a float64
+// number as result
 type ActivationFunc func(float64) float64
 
 // Sigmoid activation function
