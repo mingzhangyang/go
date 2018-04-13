@@ -9,7 +9,7 @@ import (
 func solve(s string) int {
 	var s1 ds.Stack
 	var s2 ds.Stack
-	var res int
+	var t int
 	for _, c := range s {
 		switch byte(c) {
 		case '(', ' ':
@@ -25,22 +25,25 @@ func solve(s string) int {
 			n, _ := strconv.Atoi(b)
 			switch op {
 			case "+":
-				res += (m + n)
+				t = (m + n)
 			case "-":
-				res += (m - n)
+				t = (m - n)
 			case "*":
-				res += (m * n)
+				t = (m * n)
 			case "/":
-				res += (m / n)
+				t = (m / n)
 			}
+			s1.Push(strconv.Itoa(t))
 		default:
 			panic("Only 0-9, (), +,-,*,/ are allowed.")
 		}
 	}
+	x, _ := s1.Pop()
+	res, _ := strconv.Atoi(x)
 	return res
 }
 
 func main() {
-	i := solve("5 + ((2 * 4)/(3*2 - 5) + 3)")
+	i := solve("(1 + ((2 + 3)*(4 * 5) ))")
 	fmt.Println(i)
 }
