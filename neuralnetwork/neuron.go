@@ -6,7 +6,7 @@ import "math/rand"
 type Neuron struct {
 	bias           float64
 	weights        []float64
-	afi            int //activation function index
+	af             ActivationFunc
 	localGradient  []float64
 }
 
@@ -20,9 +20,11 @@ func NewNeuron(n int) *Neuron {
 		s[i] = rand.NormFloat64()
 	}
 	neuron.weights = s
+	
 	//neuron.activationFunc = func(v float64) float64 { // What activation function should be set default?
 	//	return v
 	//}
+	
 	return &neuron
 }
 
