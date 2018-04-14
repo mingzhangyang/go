@@ -28,7 +28,7 @@ func ReLU(v float64) float64 {
 	return v
 }
 
-var AFM map[int]ActivationFunc
+var AFM = make(map[int]ActivationFunc)
 
 AFM[0] = ReLU
 AFM[1] = Sigmoid
