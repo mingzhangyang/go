@@ -3,6 +3,8 @@ package network
 import "math"
 
 // ActivationFunc define the type of activation functions
+// it receives an float64 number as argument and returns a float64
+// number as result
 type ActivationFunc func(float64) float64
 
 // Sigmoid activation function
@@ -19,9 +21,15 @@ func Tanh(v float64) float64 {
 }
 
 // ReLu activation function
-func ReLu(v float64) float64 {
+func ReLU(v float64) float64 {
 	if v < 0 {
 		return 0
 	}
 	return v
 }
+
+var AFM = make(map[int]ActivationFunc)
+
+AFM[0] = ReLU
+AFM[1] = Sigmoid
+AFM[2] = Tanh

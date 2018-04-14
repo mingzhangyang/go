@@ -6,7 +6,8 @@ import "math/rand"
 type Neuron struct {
 	bias           float64
 	weights        []float64
-	activationFunc ActivationFunc
+	af             ActivationFunc
+	localGradient  []float64
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
@@ -19,9 +20,11 @@ func NewNeuron(n int) *Neuron {
 		s[i] = rand.NormFloat64()
 	}
 	neuron.weights = s
-	neuron.activationFunc = func(v float64) float64 {
-		return v
-	}
+	
+	//neuron.activationFunc = func(v float64) float64 { // What activation function should be set default?
+	//	return v
+	//}
+	
 	return &neuron
 }
 
@@ -44,10 +47,13 @@ func (n *Neuron) Compute(input []float64) float64 {
 	for i := 0; i < len(input); i++ {
 		r += (input[i] * n.weights[i])
 	}
-	return n.activationFunc(r + n.bias)
+	//return n.activationFunc(r + n.bias)
+	return AFM[n.afi](r + n.bias)
 }
 
 // Update method update the weights and bias of the neuron
-func (n *Neuron) Update() {
-
+func (n *Neuron) Update(learningRate float64) {
+	for i := range n.weights {
+		n.weights[i] -= (n.localGradient[i] * learningRate)
+	}
 }
