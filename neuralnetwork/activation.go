@@ -21,9 +21,15 @@ func Tanh(v float64) float64 {
 }
 
 // ReLu activation function
-func ReLu(v float64) float64 {
+func ReLU(v float64) float64 {
 	if v < 0 {
 		return 0
 	}
 	return v
 }
+
+var AFM map[int]ActivationFunc
+
+AFM[0] = ReLU
+AFM[1] = Sigmoid
+AFM[2] = Tanh
