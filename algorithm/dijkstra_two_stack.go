@@ -1,7 +1,6 @@
-package main
+package algorithm
 
 import (
-	"fmt"
 	ds "go-learning/datastructure"
 	"strconv"
 )
@@ -43,7 +42,7 @@ func solve(s string) int {
 	return res
 }
 
-func main() {
-	i := solve("(1 + ((2 + 3)*(4 * 5) ))")
-	fmt.Println(i)
-}
+// func main() {
+// 	i := solve("(1 + ((2 + 3)*(4 * 5) ))")
+// 	fmt.Println(i)
+// }

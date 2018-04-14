@@ -1,10 +1,8 @@
-package main
+package algorithm
 
-import "fmt"
-
-type Panel struct{
+type Panel struct {
 	Row, Col int
-	matrix [][]int
+	matrix   [][]int
 }
 
 func (p *Panel) init() {
@@ -19,8 +17,8 @@ func (p *Panel) update(a, b int) {
 
 }
 
-func main() {
-	var p = Panel{3, 5, make([][]int, 3)}
-	p.init()
-	fmt.Println(p)
-}
+// func main() {
+// 	var p = Panel{3, 5, make([][]int, 3)}
+// 	p.init()
+// 	fmt.Println(p)
+// }

@@ -1,15 +1,15 @@
-package main
+package algorithm
 
 import (
 	"fmt"
 )
 
 type State struct {
-	index int
+	index  int
 	maxVal int
 	values []int
 	maxLen int
-	count int
+	count  int
 }
 
 func longestSubstr(a []int) {
@@ -39,7 +39,7 @@ func longestSubstr(a []int) {
 		st.count += 1
 	}
 
-	if (st.count > 1) {
+	if st.count > 1 {
 		fmt.Printf("There are %d substrings with the length of %d\n",
 			st.count, len(st.values))
 	} else {
@@ -49,8 +49,8 @@ func longestSubstr(a []int) {
 
 }
 
-func main() {
-	a := []int{1, 2, 4, 2, 1, 3, 5, 7, 2, 6, 3, 5, 7, 8, 9, 2, 3, 1, 5, 7, 8, 10}
-	longestSubstr(a)
-	longestSubstr([]int{2, 2, 2, 2, 2, 2})
-}
+// func main() {
+// 	a := []int{1, 2, 4, 2, 1, 3, 5, 7, 2, 6, 3, 5, 7, 8, 9, 2, 3, 1, 5, 7, 8, 10}
+// 	longestSubstr(a)
+// 	longestSubstr([]int{2, 2, 2, 2, 2, 2})
+// }
