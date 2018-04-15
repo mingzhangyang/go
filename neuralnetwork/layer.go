@@ -1,4 +1,4 @@
-package network
+package neuralnetwork
 
 // Layer represent a hidden layer of neural network
 type Layer []*Neuron

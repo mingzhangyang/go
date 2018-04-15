@@ -1,4 +1,4 @@
-package network
+package neuralnetwork
 
 import "math"
 
@@ -20,16 +20,10 @@ func Tanh(v float64) float64 {
 	return (m - n) / (m + n)
 }
 
-// ReLu activation function
+// ReLU activation function
 func ReLU(v float64) float64 {
 	if v < 0 {
 		return 0
 	}
 	return v
 }
-
-var AFM = make(map[int]ActivationFunc)
-
-AFM[0] = ReLU
-AFM[1] = Sigmoid
-AFM[2] = Tanh

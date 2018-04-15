@@ -1,13 +1,13 @@
-package network
+package neuralnetwork
 
 import "math/rand"
 
 // Neuron is the computing unit
 type Neuron struct {
-	bias           float64
-	weights        []float64
-	af             ActivationFunc
-	localGradient  []float64
+	bias          float64
+	weights       []float64
+	af            ActivationFunc
+	localGradient []float64
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
@@ -20,17 +20,16 @@ func NewNeuron(n int) *Neuron {
 		s[i] = rand.NormFloat64()
 	}
 	neuron.weights = s
-	
+	neuron.af = ReLU
 	//neuron.activationFunc = func(v float64) float64 { // What activation function should be set default?
 	//	return v
 	//}
-	
 	return &neuron
 }
 
 // SetActivationFunc method set the input activation function as the activationFn of the neuron
 func (n *Neuron) SetActivationFunc(fn ActivationFunc) {
-	n.activationFunc = fn
+	n.af = fn
 }
 
 // NumOfWeights method return the length of the weights slice
@@ -48,7 +47,7 @@ func (n *Neuron) Compute(input []float64) float64 {
 		r += (input[i] * n.weights[i])
 	}
 	//return n.activationFunc(r + n.bias)
-	return AFM[n.afi](r + n.bias)
+	return n.af(r + n.bias)
 }
 
 // Update method update the weights and bias of the neuron

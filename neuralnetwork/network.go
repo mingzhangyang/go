@@ -1,4 +1,4 @@
-package network
+package neuralnetwork
 
 // Network is a collection of hidden layers
 type Network []Layer

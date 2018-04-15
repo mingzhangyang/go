@@ -1,6 +1,8 @@
-package network
+package neuralnetwork
 
-import "math"
+import (
+	"math"
+)
 
 // LossFunc define the type of loss functions
 type LossFunc func([][]float64, [][]float64) float64
@@ -29,3 +31,12 @@ func CrossEntropy(predictions, labels [][]float64) float64 {
 	}
 	return r / float64(len(labels)) // remember return the mean
 }
+
+/*****************************************************************
+* Test code for init function for the neuralnetwork package
+******************************************************************/
+// func init() {
+// 	fmt.Println("init function invoked")
+// 	fmt.Println(ReLU)
+// 	fmt.Println(Softmax)
+// }

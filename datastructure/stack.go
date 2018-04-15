@@ -2,7 +2,7 @@ package datastructure
 
 // Stack type
 type Stack struct {
-	Entry *Node
+	Entry  *Node
 	length int
 }
 

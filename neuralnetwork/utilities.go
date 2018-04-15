@@ -1,20 +1,20 @@
-package network
+package neuralnetwork
 
 import "math"
 
 // SoftmaxForVector function for a vector
 func SoftmaxForVector(v []float64) []float64 {
-    var r = make([]float64, len(v))
-    var sum, it float64
-    for i := 0; i < len(v); i++ {
-        it = math.Pow(math.E, v[i])
-        r[i] = it
-        sum += it
-    }
-    for i := 0; i < len(v); i++ {
-        r[i] /= sum
-    }
-    return r
+	var r = make([]float64, len(v))
+	var sum, it float64
+	for i := 0; i < len(v); i++ {
+		it = math.Pow(math.E, v[i])
+		r[i] = it
+		sum += it
+	}
+	for i := 0; i < len(v); i++ {
+		r[i] /= sum
+	}
+	return r
 }
 
 // Softmax function for matrix
@@ -28,26 +28,26 @@ func Softmax(input [][]float64) [][]float64 {
 
 // OnehotForVector encoding function for vector
 func OnehotForVector(v []float64) []float64 {
-    var r float64 // r initialized to be zero if fine, because for Onehot encoding, all the values are in the domain [0, 1)
-    var index int
-    for i := 0; i < len(v); i++ {
-        if v[i] > r {
-            r = v[i]
-            index = i
-        }
-    }
-    var s = make([]float64, len(v))
-    s[index] = 1.0
-    return s
+	var r float64 // r initialized to be zero if fine, because for Onehot encoding, all the values are in the domain [0, 1)
+	var index int
+	for i := 0; i < len(v); i++ {
+		if v[i] > r {
+			r = v[i]
+			index = i
+		}
+	}
+	var s = make([]float64, len(v))
+	s[index] = 1.0
+	return s
 }
 
 // OnehotForMatrix encoding function for matrix
 func OnehotForMatrix(v [][]float64) [][]float64 {
-    r := make([][]float64, len(v))
-    for i := 0; i < len(v); i++ {
-        r[i] = OnehotForVector(v[i])
-    }
-    return r
+	r := make([][]float64, len(v))
+	for i := 0; i < len(v); i++ {
+		r[i] = OnehotForVector(v[i])
+	}
+	return r
 }
 
 // CreateOnehotEncodedLabelsFromStringLabels method does its name says
