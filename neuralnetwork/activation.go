@@ -7,6 +7,8 @@ import "math"
 // number as result
 type ActivationFunc func(float64) float64
 
+var AFM = make(map[string]ActivationFunc)
+
 // Sigmoid activation function
 func Sigmoid(v float64) float64 {
 	return 1 / (1 + math.Pow(math.E, -v))
@@ -26,4 +28,19 @@ func ReLU(v float64) float64 {
 		return 0
 	}
 	return v
+}
+
+func init() {
+	AFM["sigmoid"] = Sigmoid
+	AFM["Sigmoid"] = Sigmoid
+	AFM["SIGMOID"] = Sigmoid
+
+	AFM["tanh"] = Tanh
+	AFM["Tanh"] = Tanh
+	AFM["TANH"] = Tanh
+
+	AFM["ReLU"] = ReLU
+	AFM["relu"] = ReLU
+	AFM["RELU"] = ReLU
+	AFM["ReLu"] = ReLU
 }

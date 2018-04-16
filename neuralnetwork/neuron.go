@@ -11,7 +11,7 @@ type Neuron struct {
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
-func NewNeuron(n int) *Neuron {
+func NewNeuron(n int, af string) *Neuron {
 	var neuron Neuron
 	neuron.bias = rand.Float64()
 	s := make([]float64, n)
@@ -20,16 +20,25 @@ func NewNeuron(n int) *Neuron {
 		s[i] = rand.NormFloat64()
 	}
 	neuron.weights = s
-	neuron.af = ReLU
+	neuron.af = Sigmoid
 	//neuron.activationFunc = func(v float64) float64 { // What activation function should be set default?
 	//	return v
 	//}
 	return &neuron
 }
 
-// SetActivationFunc method set the input activation function as the activationFn of the neuron
-func (n *Neuron) SetActivationFunc(fn ActivationFunc) {
+// SetCustomActivationFunc method set the input activation function as the activationFn of the neuron
+func (n *Neuron) SetCustomActivationFunc(fn ActivationFunc) {
 	n.af = fn
+}
+
+// SetActivationFunc method set the activation fucntion of the neuron with the provided activation function name
+// Sigmoid, Tanh, ReLU are the candidtaes
+func (n *Neuron) SetActivationFunc(name string) {
+	n.af = AFM[name]
+	if n.af == nil {
+		panic("Illegal activation function name provided...")
+	}
 }
 
 // NumOfWeights method return the length of the weights slice
