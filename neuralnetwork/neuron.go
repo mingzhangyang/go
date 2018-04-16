@@ -11,7 +11,7 @@ type Neuron struct {
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
-func NewNeuron(n int, af string) *Neuron {
+func NewNeuron(n int) *Neuron {
 	var neuron Neuron
 	neuron.bias = rand.Float64()
 	s := make([]float64, n)
