@@ -6,7 +6,7 @@ import "math/rand"
 type Neuron struct {
 	bias          float64
 	weights       []float64
-	af            ActivationFunc
+	af            string
 	localGradient []float64
 }
 
@@ -20,25 +20,31 @@ func NewNeuron(n int) *Neuron {
 		s[i] = rand.NormFloat64()
 	}
 	neuron.weights = s
-	neuron.af = Sigmoid
+	neuron.af = "Sigmoid"
 	//neuron.activationFunc = func(v float64) float64 { // What activation function should be set default?
 	//	return v
 	//}
 	return &neuron
 }
 
+/*
 // SetCustomActivationFunc method set the input activation function as the activationFn of the neuron
 func (n *Neuron) SetCustomActivationFunc(fn ActivationFunc) {
 	n.af = fn
 }
 
+This method is removed. Because a function to calculate the derivative of the 
+custom activation function is also required in this case.
+*/
+
 // SetActivationFunc method set the activation fucntion of the neuron with the provided activation function name
 // Sigmoid, Tanh, ReLU are the candidtaes
 func (n *Neuron) SetActivationFunc(name string) {
-	n.af = AFM[name]
-	if n.af == nil {
-		panic("Illegal activation function name provided...")
+	if _, ok := AFM[name]; ok {
+		n.af = name
+		return
 	}
+	panic("Illegal activation function name provided...")
 }
 
 // NumOfWeights method return the length of the weights slice
@@ -56,7 +62,7 @@ func (n *Neuron) Compute(input []float64) float64 {
 		r += (input[i] * n.weights[i])
 	}
 	//return n.activationFunc(r + n.bias)
-	return n.af(r + n.bias)
+	return AFM[n.af](r + n.bias)
 }
 
 // Update method update the weights and bias of the neuron

@@ -19,12 +19,16 @@ func (l Layer) Length() int {
 	return len(l)
 }
 
+/*
 // SetCustomNeuronActivationFunc method set the activation function of neurons in the layer
 func (l Layer) SetCustomNeuronActivationFunc(fn ActivationFunc) {
 	for _, n := range l {
 		n.SetCustomActivationFunc(fn) // because n is the pointer of a neuron, this is OK
 	}
 }
+
+This method is removed as it does in neuron structure.
+*/
 
 // SetNeuronActivationFunc method set the activation function of neurons in the layer
 // The name of the activation function is required here
