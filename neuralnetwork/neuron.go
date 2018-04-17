@@ -4,10 +4,13 @@ import "math/rand"
 
 // Neuron is the computing unit
 type Neuron struct {
-	bias          float64
-	weights       []float64
-	af            string
-	localGradient []float64
+	inputs          []float64
+	bias            float64
+	weights         []float64
+	af              string
+	weightGradients []float64 // gradient with respect to each weight
+	output          float64
+	localGradient   float64 // gradient with respect to the output of the neuron
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
@@ -33,7 +36,7 @@ func (n *Neuron) SetCustomActivationFunc(fn ActivationFunc) {
 	n.af = fn
 }
 
-This method is removed. Because a function to calculate the derivative of the 
+This method is removed. Because a function to calculate the derivative of the
 custom activation function is also required in this case.
 */
 
@@ -57,17 +60,30 @@ func (n *Neuron) Compute(input []float64) float64 {
 	if len(input) != len(n.weights) {
 		panic("The length of input vector doesn't match the weights of the neuron")
 	}
+	n.inputs = input
 	var r float64
 	for i := 0; i < len(input); i++ {
 		r += (input[i] * n.weights[i])
 	}
 	//return n.activationFunc(r + n.bias)
-	return AFM[n.af](r + n.bias)
+	n.output = AFM[n.af](r + n.bias)
+	return n.output
+}
+
+// SetWeightGradients compute the gradient with respect to each weight
+func (n *Neuron) SetWeightGradients() {
+	// below is the computation for neurons with sigmoid activation function
+	t := n.localGradient * n.output * (1 - n.output)
+	for i := range n.weightGradients {
+		n.weightGradients[i] = t * n.inputs[i]
+	}
 }
 
 // Update method update the weights and bias of the neuron
 func (n *Neuron) Update(learningRate float64) {
 	for i := range n.weights {
-		n.weights[i] -= (n.localGradient[i] * learningRate)
+		n.weights[i] -= (n.weightGradients[i] * learningRate)
 	}
+	// for neurons with sigmoid activation function
+	n.bias -= n.localGradient * n.output * (1 - n.output)
 }

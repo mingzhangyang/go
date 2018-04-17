@@ -59,6 +59,18 @@ func (l Layer) ComputeWithMatrix(input [][]float64) [][]float64 {
 	return r
 }
 
+// SetLocalGradient method set the local gradient of each neuron in the layer
+// the argument of this method is the afterward layer in feed forward process
+// this version is for neurons with sigmoid activation function
+func (l Layer) SetLocalGradient(after Layer) {
+	for i := range l {
+		neuron := l[i]
+		for _, n := range after {
+			neuron.localGradient += n.localGradient * n.output * (1 - n.output) * n.weightGradients[i]
+		}
+	}
+}
+
 // Update method update each neuron in the layer to reduce the Loss
 func (l Layer) Update() {
 

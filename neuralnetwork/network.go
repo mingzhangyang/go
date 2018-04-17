@@ -38,3 +38,9 @@ func (nn Network) ComputeLoss(input [][]float64, labels [][]float64, fn LossFunc
 	res = SoftmaxForMatrix(res)
 	return fn(res, labels)
 }
+
+// BackPropagation to update the weights and bias of all neurons in the network
+func (nn Network) BackPropagation(gd []float64) {
+	// below is for neurons with sigmoid activation function
+	
+}
