@@ -8,9 +8,9 @@ type Neuron struct {
 	bias            float64
 	weights         []float64
 	af              string
-	weightGradients []float64 // gradient with respect to each weight
+	weightGradients []float64 // Loss gradient with respect to each weight
 	output          float64
-	localGradient   float64 // gradient with respect to the output of the neuron
+	localGradient   float64 // Loss gradient with respect to the output of the neuron
 }
 
 // NewNeuron method return the pointer of an initialized neuron ready to use
@@ -73,7 +73,7 @@ func (n *Neuron) Compute(input []float64) float64 {
 // SetWeightGradients compute the gradient with respect to each weight
 func (n *Neuron) SetWeightGradients() {
 	// below is the computation for neurons with sigmoid activation function
-	t := n.localGradient * n.output * (1 - n.output)
+	t := n.localGradient * (DFM[n.af](n.output))
 	for i := range n.weightGradients {
 		n.weightGradients[i] = t * n.inputs[i]
 	}
