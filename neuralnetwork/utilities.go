@@ -2,8 +2,8 @@ package neuralnetwork
 
 import "math"
 
-// SoftmaxForVector function for a vector
-func SoftmaxForVector(v []float64) []float64 {
+// Softmax function for a vector
+func Softmax(v []float64) []float64 {
 	var r = make([]float64, len(v))
 	var sum, it float64
 	for i := 0; i < len(v); i++ {
@@ -17,11 +17,29 @@ func SoftmaxForVector(v []float64) []float64 {
 	return r
 }
 
-// Softmax function for matrix
-func Softmax(input [][]float64) [][]float64 {
+// StableSoftmax function
+func StableSoftmax(v []float64) []float64 {
+	var max float64
+	for _, f := range v {
+		if max < f {
+			max = f
+		}
+	}
+	if max < 709 { // math.Log(math.MaxFloat64) == 709.782712893384
+		return Softmax(v)
+	}
+	var r = make([]float64, len(v))
+	for i := range r {
+		r[i] = v[i] - max
+	}
+	return Softmax(r)
+}
+
+// SoftmaxForMatrix function for matrix
+func SoftmaxForMatrix(input [][]float64) [][]float64 {
 	var r = make([][]float64, len(input))
 	for i, s := range input {
-		r[i] = SoftmaxForVector(s)
+		r[i] = StableSoftmax(s)
 	}
 	return r
 }

@@ -60,6 +60,14 @@ func SoftPlus(v float64) float64 {
 	return math.Log(1 + math.Pow(math.E, v))
 }
 
+// RegisterCustomActivationFunc Provide an interface for users to 
+// register custom activation functions. Users should provide the 
+// activation functions and a function to calculate the de
+func RegisterCustomActivationFunc(name string, actFunc, derivativeFunc func(float64)float64) {
+	AFM[name] = actFunc
+	DFM[name] = derivativeFunc
+}
+
 func init() {
 	AFM["sigmoid"] = Sigmoid
 	AFM["Sigmoid"] = Sigmoid
