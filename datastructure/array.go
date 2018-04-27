@@ -1,6 +1,7 @@
 package datastructure
 
 import (
+	"sort"
 	"fmt"
 	"log"
 	"math"
@@ -10,8 +11,13 @@ import (
 // Array is the numpy ndarray couterpart in Golang
 type Array []float64
 
-// NewArray return an array from the input
-func NewArray(list []interface{}) (Array, error) {
+// NewArray create a array with the specified length
+func NewArray(n int) Array {
+	return make(Array, n)
+}
+
+// NewArrayFrom return an array from the input
+func NewArrayFrom(list []interface{}) (Array, error) {
 	if len(list) == 0 {
 		return Array([]float64{}), nil
 	}
@@ -153,5 +159,82 @@ func (a Array) Shuffle() {
 	for i := len(a) - 1; i > 0; i-- {
 		j := rand.Intn(i + 1)
 		a[i], a[j] = a[j], a[i]
+	}
+}
+
+// Push an elment to the end of the array
+func (a Array) Push(x float64) {
+	a = append(a, x)
+}
+
+// Pop an element from the end of the array
+func (a Array) Pop() float64 {
+	x := a[len(a) - 1]
+	a = a[:len(a)-1]
+	return x
+}
+
+// Insert one or more elements at specified index
+func (a Array) Insert(idx int, v ...float64) {
+	if idx < 0 {
+		idx += len(a)
+	}
+	if idx > len(a)-1 {
+		log.Panic("invalid index")
+	}
+	a = append(a[:idx], append(v, a[idx:]...)...)
+}
+
+// Concat join two array
+func (a Array) Concat(b Array) {
+	a = append(a, b...)
+}
+
+// Slice return a new slice with a slice with its own underlying storage
+func (a Array) Slice(m, n int) Array {
+	if m < 0 {
+		m += len(a)
+	}
+	if n < 0 {
+		n += len(a)
+	}
+	if m > n {
+		log.Panic("invalide index")
+	}
+	s := make(Array, 0)
+	return append(s, a[m:n]...)
+}
+
+// Reverse the array in place
+// source: https://github.com/golang/go/wiki/SliceTricks
+func (a Array) Reverse() {
+	for i := len(a)/2-1; i >= 0; i-- {
+		opp := len(a)-1-i
+		a[i], a[opp] = a[opp], a[i]
+	}
+}
+
+// Implementing sort.Interface
+
+// Len return the length of the array
+func (a Array) Len() int {
+	return len(a)
+}
+
+// Less function
+func (a Array) Less(i, j int) bool {
+	return a[i] < a[j]
+}
+
+// Swap two element
+func (a Array) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
+}
+
+// Sort the array. If n >= 0, sort in ascending order; if n < 0, descending
+func (a Array) Sort(n int) {
+	sort.Sort(a)
+	if n < 0 {
+		a.Reverse()
 	}
 }
