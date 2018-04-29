@@ -1,11 +1,11 @@
 package datastructure
 
 import (
-	"sort"
 	"fmt"
 	"log"
 	"math"
 	"math/rand"
+	"sort"
 )
 
 // Array is the numpy ndarray couterpart in Golang
@@ -163,31 +163,61 @@ func (a Array) Shuffle() {
 }
 
 // Push an elment to the end of the array
-func (a Array) Push(x float64) {
-	a = append(a, x)
+// In the definition of method, one can't reassign `a`,
+// which is just a copy of the original data, even `a` is
+// pointer or reference
+func (a Array) Push(x float64) Array {
+	return append(a, x)
 }
 
 // Pop an element from the end of the array
-func (a Array) Pop() float64 {
-	x := a[len(a) - 1]
-	a = a[:len(a)-1]
-	return x
+// This is meaningless
+func (a Array) Pop() Array {
+	return a[:len(a)-1]
 }
 
 // Insert one or more elements at specified index
-func (a Array) Insert(idx int, v ...float64) {
+func (a Array) Insert(idx int, v ...float64) Array {
 	if idx < 0 {
 		idx += len(a)
 	}
 	if idx > len(a)-1 {
 		log.Panic("invalid index")
 	}
-	a = append(a[:idx], append(v, a[idx:]...)...)
+	return append(a[:idx], append(v, a[idx:]...)...)
 }
 
 // Concat join two array
-func (a Array) Concat(b Array) {
-	a = append(a, b...)
+func (a Array) Concat(b Array) Array {
+	return append(a, b...)
+}
+
+// Drop one or more elements starts from the target index
+func (a Array) Drop(index, count int) Array {
+	if index < 0 {
+		index += len(a)
+	}
+	if count < 0 {
+		log.Panic("invalid count, a positive int expected")
+	}
+	if index >= len(a) || index+count >= len(a) {
+		log.Panic("invalid index or count, out of range")
+	}
+	return append(a[:index], a[(index+count):]...)
+}
+
+// Splice do more than Drop
+func (a Array) Splice(index, count int, v ...float64) Array {
+	if index < 0 {
+		index += len(a)
+	}
+	if count < 0 {
+		log.Panic("invalid count, a positive int expected")
+	}
+	if index >= len(a) || index+count >= len(a) {
+		log.Panic("invalid index or count, out of range")
+	}
+	return append(a[:index], append(v, a[(index+count):]...)...)
 }
 
 // Slice return a new slice with a slice with its own underlying storage
@@ -197,6 +227,9 @@ func (a Array) Slice(m, n int) Array {
 	}
 	if n < 0 {
 		n += len(a)
+	}
+	if m >= len(a) || n > len(a) {
+		log.Panic("out of range")
 	}
 	if m > n {
 		log.Panic("invalide index")
@@ -208,8 +241,8 @@ func (a Array) Slice(m, n int) Array {
 // Reverse the array in place
 // source: https://github.com/golang/go/wiki/SliceTricks
 func (a Array) Reverse() {
-	for i := len(a)/2-1; i >= 0; i-- {
-		opp := len(a)-1-i
+	for i := len(a)/2 - 1; i >= 0; i-- {
+		opp := len(a) - 1 - i
 		a[i], a[opp] = a[opp], a[i]
 	}
 }

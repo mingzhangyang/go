@@ -75,3 +75,7 @@ func (l Layer) SetLocalGradient(after Layer) {
 func (l Layer) Update() {
 
 }
+
+func (l Layer) Dropout(ratio float32) {
+
+}
