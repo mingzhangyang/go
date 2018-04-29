@@ -220,6 +220,25 @@ func (a Array) Splice(index, count int, v ...float64) Array {
 	return append(a[:index], append(v, a[(index+count):]...)...)
 }
 
+// Split an array into two arrays
+func (a Array) Split(ratio float64) (Array, Array) {
+	if ratio < 0 || ratio > 1 {
+		log.Panic("ratio should be in range (0, 1)")
+	}
+	l := int(math.Floor(float64(len(a)) * ratio))
+	r := len(a) - l
+	ls := make(Array, l)
+	rs := make(Array, r)
+	idx := rand.Perm(len(a))
+	for i := 0; i < l; i++ {
+		ls[i] = a[idx[i]]
+	}
+	for j := 0; l+j < len(a); j++ {
+		rs[j] = a[idx[l+j]]
+	}
+	return ls, rs
+}
+
 // Slice return a new slice with a slice with its own underlying storage
 func (a Array) Slice(m, n int) Array {
 	if m < 0 {

@@ -4,7 +4,7 @@ import ds "go-learning/datastructure"
 
 // Variance return the sample variance of the elements
 func Variance(list []interface{}) (float64, error) {
-	a, err := ds.NewArray(list)
+	a, err := ds.NewArrayFrom(list)
 	if err != nil {
 		return 0, err
 	}
@@ -13,7 +13,7 @@ func Variance(list []interface{}) (float64, error) {
 
 // SD return standard deviation of the elements
 func SD(list []interface{}) (float64, error) {
-	a, err := ds.NewArray(list)
+	a, err := ds.NewArrayFrom(list)
 	if err != nil {
 		return 0, err
 	}
