@@ -94,6 +94,25 @@ func (a Array) Max() (max float64) {
 	return
 }
 
+// Argmax return the first index of the maximum value
+func (a Array) Argmax() int {
+	if len(a) == 0 {
+		log.Panic("empty array")
+	}
+	var (
+		i int
+		v float64
+	)
+	v = a[0]
+	for j, f := range a {
+		if f > v {
+			i = j
+			v = f
+		}
+	}
+	return i
+}
+
 // Min return the min of all the elements in the array
 func (a Array) Min() (min float64) {
 	if len(a) == 0 {
@@ -104,6 +123,25 @@ func (a Array) Min() (min float64) {
 		min = math.Min(min, a[i])
 	}
 	return
+}
+
+// Argmin return the first index of the minimum value
+func (a Array) Argmin() int {
+	if len(a) == 0 {
+		log.Panic("empty array")
+	}
+	var (
+		i int
+		v float64
+	)
+	v = a[0]
+	for j, f := range a {
+		if f < v {
+			i = j
+			v = f
+		}
+	}
+	return i
 }
 
 // Median return the median number
