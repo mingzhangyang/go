@@ -125,6 +125,7 @@ func (h *HMM) SetEmissionProbablity(state, obs string, p float64) {
 // Implement the Forward algorithm
 func (h *HMM) Monitor(obs []string) float64 {
 	var res float64
+	
 	// len(h.states) + 2 = START + states + END
 	var dp = make([]float64, len(h.states)+2)
 
@@ -168,10 +169,4 @@ func (h *HMM) Monitor(obs []string) float64 {
 		res += v
 	}
 	return res
-}
-
-// MostLikelyPath method calculate the most likely path through which
-// the hidden states go
-func (h *HMM) MostLikelyPath(seq []string) {
-
 }
