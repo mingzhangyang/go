@@ -134,7 +134,8 @@ func (h *HMM) Monitor(obs []string) float64 {
 	var zeros = make([]float64, len(dp))
 
 	// init
-	dp = h.TPTable[0]
+	// dp = h.TPTable[0] **bug: after assignment, modify dp will modify h.TPTable[0]**
+	copy(dp, h.TPTable[0])
 	// oi: observation index
 	oi, ok := h.observationIndexMap[obs[0]]
 	if !ok {
