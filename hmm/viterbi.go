@@ -38,6 +38,8 @@ func (h *HMM) Decode (obs []string) []string {
 
 	// tmp is a matrix, row number corresponds to the next state index
 	// the column number corresponds to the current state index
+	// PAY ATTENTION it is opposit to transition table where row number
+	// is the current state index and the column number is the next state index
 	var tmp = make([]array, len(h.TPTable))
 	for i := range tmp {
 		tmp[i] = make(array, len(h.TPTable))
@@ -47,7 +49,6 @@ func (h *HMM) Decode (obs []string) []string {
 	var dptmp = make([]record, len(dp))
 
 	// init
-	// dp = h.TPTable[0] // **BUG**
 	for i := range h.TPTable[0] {
 		dp[i].prob = h.TPTable[0][i]
 		dp[i].path = make([]int, len(obs))
