@@ -84,12 +84,18 @@ func (h *HMM) Decode (obs []string) []string {
 		for k := 1; k < len(tmp)-1; k++ {
 			idx, val := tmp[k].argmax()
 			dptmp[k].prob = val
+			
 			// idx tells where the current dptmp[k] come from
 			// so that we can update the dptmp[k].path
 			copy(dptmp[k].path, dp[idx].path)
 			dptmp[k].path[i] = k
+
 			// then copy dptmp to dp
-			copy(dp, dptmp)
+			// copy(dp, dptmp) **This is problematic!!!**
+			for i := range dp {
+				dp[i].prob = dptmp[i].prob
+				copy(dp[i].path, dptmp[i].path)
+			}
 		}
 	}
 
