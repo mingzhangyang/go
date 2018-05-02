@@ -1,15 +1,15 @@
 package main
 
-import(
+import (
 	"fmt"
 	"math/rand"
 )
 
-type Slot struct {
-	name string
+type slot struct {
+	name     string
 	targeted float32
-	counts float32
-	ratio float32
+	counts   float32
+	ratio    float32
 }
 
 func findBest(a []Slot) int {
@@ -35,9 +35,9 @@ func main() {
 		t := rand.Intn(h)
 		//fmt.Println(t)
 		if t == best {
-			arr[best].targeted += 1
+			arr[best].targeted++
 		}
-		arr[best].counts += 1
+		arr[best].counts++
 		arr[best].ratio = arr[best].targeted / arr[best].counts
 
 		best = findBest(arr)

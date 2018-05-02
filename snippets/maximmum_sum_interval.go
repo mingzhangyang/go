@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func MSI(a []int) int {
+func msi(a []int) int {
 	cur := a[0]
 	max := cur
 
@@ -21,5 +21,5 @@ func MSI(a []int) int {
 
 func main() {
 	a := []int{1, 3, 2, -4, 9, -3, 5, 2, 8, -5, 8, 10, -4}
-	fmt.Println(MSI(a))
+	fmt.Println(msi(a))
 }

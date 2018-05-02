@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-type ReadLineObject struct {
+type readLineObject struct {
 	FileName    string
 	CountOfChar int
 	CountOfLine int
@@ -18,13 +18,13 @@ type ReadLineObject struct {
 	currentLine string
 }
 
-func NewReadLineObject(name string) (*ReadLineObject, error) {
-	var rlo *ReadLineObject
+func newReadLineObject(name string) (*ReadLineObject, error) {
+	var rlo *readLineObject
 	f, err := os.Open(name)
 	if err != nil {
 		return rlo, err
 	}
-	rlo = &ReadLineObject{FileName: name}
+	rlo = &readLineObject{FileName: name}
 	rlo.FileInfo, _ = f.Stat()
 	rlo.Size = rlo.FileInfo.Size()
 	rlo.src = func() <-chan string {
@@ -34,7 +34,7 @@ func NewReadLineObject(name string) (*ReadLineObject, error) {
 			for scanner.Scan() {
 				rlo.currentLine = scanner.Text()
 				rlo.CountOfChar += len(rlo.currentLine)
-				rlo.CountOfLine += 1
+				rlo.CountOfLine++
 				c <- rlo.currentLine
 			}
 			rlo.Done = true
@@ -46,7 +46,7 @@ func NewReadLineObject(name string) (*ReadLineObject, error) {
 	return rlo, nil
 }
 
-func (r ReadLineObject) ReadLine() string {
+func (r readLineObject) ReadLine() string {
 	return <-(r.src)
 }
 
@@ -67,7 +67,7 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	rlo, err := NewReadLineObject(path)
+	rlo, err := newReadLineObject(path)
 	if err != nil {
 		log.Fatal(err)
 	}

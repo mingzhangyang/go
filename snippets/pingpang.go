@@ -5,34 +5,40 @@ import (
 	"time"
 )
 
-type Ball struct {
+type ball struct {
 	hits int
 }
 
-type Table chan *Ball
+type table chan *ball
 
-func Play(player string, table Table, quit chan bool) {
+func play(player string, tab table, quit chan bool) {
 	for {
 		select {
 		case <-quit:
 			return
 		default:
-			ball := <-table
-			ball.hits++
-			fmt.Println(player, ball.hits)
+			bal := <-tab
+			bal.hits++
+			fmt.Println(player, bal.hits)
 			time.Sleep(100 * time.Millisecond)
-			table <- ball
+			tab <- bal
 		}
 	}
 }
 
 func main() {
-	table := make(Table)
+	defer func() {
+		fmt.Println("Done")
+		if r := recover(); r != nil {
+			fmt.Println(r)
+		}
+	}()
+	tab := make(table)
 	quit := make(chan bool, 2)
-	go Play("Player 1 hits the ball, ", table, quit)
-	go Play("Player 2 hits the ball, ", table, quit)
+	go play("Player 1 hits the ball, ", tab, quit)
+	go play("Player 2 hits the ball, ", tab, quit)
 
-	table <- new(Ball) // game on, toss the ball
+	tab <- new(ball) // game on, toss the ball
 	time.Sleep(1 * time.Second)
 	//<-table // game over, grab the ball
 	go func() {
@@ -41,7 +47,7 @@ func main() {
 		// return
 	}()
 	go func() {
-		close(table)
+		close(tab)
 		// return
 	}()
 	panic("Show me the stacks...")

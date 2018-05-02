@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-type Job struct {
+type job struct {
 	i int
 }
 
-func (j Job) do() {
+func (j job) do() {
 	<-time.After(1 * time.Second)
 	fmt.Println(j.i)
 }
@@ -46,7 +46,7 @@ func (j Job) do() {
 // 	}
 // }
 
-func process(c chan Job) {
+func process(c chan job) {
 	for j := range c {
 		j.do()
 	}
@@ -54,10 +54,10 @@ func process(c chan Job) {
 
 func main() {
 	stop := make(chan bool)
-	jobQueue := make(chan Job, 10)
+	jobQueue := make(chan job, 10)
 	go func() {
 		for i := 0; i < 100; i++ {
-			jobQueue <- Job{i}
+			jobQueue <- job{i}
 		}
 		close(jobQueue)
 		// close(stop) // if do not close stop, all goroutine will keep working for ever. Because closed jobQuequ always emit zero value.

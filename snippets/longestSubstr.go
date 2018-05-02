@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type State struct {
+type state struct {
 	index  int
 	maxVal int
 	values []int
@@ -13,7 +13,7 @@ type State struct {
 }
 
 func longestSubstr(a []int) {
-	st := State{0, -1, make([]int, 0, len(a)), 0, 1}
+	st := state{0, -1, make([]int, 0, len(a)), 0, 1}
 	for st.index < len(a) {
 		i := a[st.index]
 		if i > st.maxVal {
@@ -24,19 +24,19 @@ func longestSubstr(a []int) {
 				st.maxLen = len(st.values)
 				st.count = 1
 			} else if len(st.values) == st.maxLen {
-				st.count += 1
+				st.count++
 			}
 			st.maxVal = i
 			st.values = []int{i}
 		}
-		st.index += 1
+		st.index++
 	}
 
 	if len(st.values) > st.maxLen {
 		st.maxLen = len(st.values)
 		st.count = 1
 	} else if len(st.values) == st.maxLen {
-		st.count += 1
+		st.count++
 	}
 
 	if st.count > 1 {

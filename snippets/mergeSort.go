@@ -18,12 +18,12 @@ func merge(sorted1, sorted2 []int) []int {
 	for i < m && j < n {
 		if sorted1[i] > sorted2[j] {
 			a[k] = sorted2[j]
-			j += 1
+			j++
 		} else {
 			a[k] = sorted1[i]
-			i += 1
+			i++
 		}
-		k += 1
+		k++
 	}
 	if i == m {
 		copy(a[i+j:], sorted2[j:])

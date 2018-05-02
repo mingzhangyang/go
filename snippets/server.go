@@ -1,10 +1,12 @@
 package main
+
 import (
 	"fmt"
-	"net/http"
 	"io"
+	"net/http"
 )
-type M struct {
+
+type m struct {
 	msg string
 }
 

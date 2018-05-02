@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
-	"math/rand"
 )
 
-type Res struct {
+type res struct {
 	head, tail, change int
 }
 
-func toss(n int) Res {
+func toss(n int) res {
 	arr := make([]int, n)
 	for i := 0; i < n; i++ {
 		if rand.Intn(2) > 0 {
@@ -21,15 +21,15 @@ func toss(n int) Res {
 		}
 	}
 	k := n - 1
-	var res Res
+	var r res
 	for i := 0; i < k; i++ {
 		if arr[i] > 0 {
-			res.head += 1
+			r.head++
 		} else {
-			res.tail += 1
+			r.tail++
 		}
-		if arr[i] != arr[i + 1] {
-			res.change += 1
+		if arr[i] != arr[i+1] {
+			r.change++
 		}
 	}
 	//fmt.Println(res)
@@ -39,7 +39,7 @@ func toss(n int) Res {
 func main() {
 	if len(os.Args) == 1 {
 		fmt.Println("A int parameter is required ...")
-		return;
+		return
 	}
 	if n, err := strconv.Atoi(os.Args[1]); err == nil {
 		r := toss(n)
