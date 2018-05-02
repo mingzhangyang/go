@@ -1,4 +1,6 @@
-package algorithm
+package main
+
+import "fmt"
 
 func MSI(a []int) int {
 	cur := a[0]
@@ -17,7 +19,7 @@ func MSI(a []int) int {
 	return max
 }
 
-// func main() {
-// 	a := []int{1, 3, 2, -4, 9, -3, 5, 2, 8, -5, 8, 10, -4}
-// 	fmt.Println(MSI(a))
-// }
+func main() {
+	a := []int{1, 3, 2, -4, 9, -3, 5, 2, 8, -5, 8, 10, -4}
+	fmt.Println(MSI(a))
+}

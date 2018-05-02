@@ -1,4 +1,4 @@
-package algorithm
+package main
 
 import (
 	"fmt"
@@ -49,8 +49,8 @@ func longestSubstr(a []int) {
 
 }
 
-// func main() {
-// 	a := []int{1, 2, 4, 2, 1, 3, 5, 7, 2, 6, 3, 5, 7, 8, 9, 2, 3, 1, 5, 7, 8, 10}
-// 	longestSubstr(a)
-// 	longestSubstr([]int{2, 2, 2, 2, 2, 2})
-// }
+func main() {
+	a := []int{1, 2, 4, 2, 1, 3, 5, 7, 2, 6, 3, 5, 7, 8, 9, 2, 3, 1, 5, 7, 8, 10}
+	longestSubstr(a)
+	longestSubstr([]int{2, 2, 2, 2, 2, 2})
+}

@@ -1,4 +1,6 @@
-package algorithm
+package main
+
+import "fmt"
 
 type Tm struct {
 	max    int
@@ -19,8 +21,8 @@ func FindSecondMaximum(a []int) Tm {
 	return t
 }
 
-// func main() {
-// 	x := []int{1,5, 7, 8, 2, 4, 9, 3, 7, 5, 3}
-// 	r := FindSecondMaximum(x)
-// 	fmt.Printf("%#v\n", r)
-// }
+func main() {
+	x := []int{1, 5, 7, 8, 2, 4, 9, 3, 7, 5, 3}
+	r := FindSecondMaximum(x)
+	fmt.Printf("%#v\n", r)
+}

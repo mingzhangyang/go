@@ -1,4 +1,6 @@
-package algorithm
+package main
+
+import "fmt"
 
 func divide(a []int) [][]int {
 	if len(a) == 1 {
@@ -78,11 +80,11 @@ func mergeMinMax(a []int) minmax {
 	return res
 }
 
-// func main() {
-// 	a := []int{1, 2, 3, 6, 6, 8}
-// 	b := []int{2, 4, 5, 7, 9}
-// 	fmt.Println(merge(a, b))
-// 	c := []int{2, 1, 5, 3, 2, 6, 4, 8, 5, 23, 9, 45}
-// 	fmt.Println(mergeSort(c))
-// 	fmt.Println(mergeMinMax(c))
-// }
+func main() {
+	a := []int{1, 2, 3, 6, 6, 8}
+	b := []int{2, 4, 5, 7, 9}
+	fmt.Println(merge(a, b))
+	c := []int{2, 1, 5, 3, 2, 6, 4, 8, 5, 23, 9, 45}
+	fmt.Println(mergeSort(c))
+	fmt.Println(mergeMinMax(c))
+}

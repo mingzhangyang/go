@@ -1,6 +1,7 @@
-package algorithm
+package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strconv"
@@ -63,19 +64,18 @@ func removeDuplicates(a [][]int) map[string]int {
 	return m
 }
 
-// func main() {
-// 	//var coins = []int{50, 20, 10, 5, 2, 1}
-// 	var coins = []int{5, 3, 1}
-// 	//for i := 1; i < 100; i++ {
-// 	//	leastCoins(i, coins)
-// 	//}
-// 	ans := allPossible(30, coins)
-// 	fmt.Println(len(ans))
-// 	u := removeDuplicates(ans)
-// 	fmt.Println(len(u))
-// 	if s, err := json.MarshalIndent(u, "", "\t"); err ==
-// 		nil {
-// 		fmt.Println(string(s))
-// 	}
-
-// }
+func main() {
+	//var coins = []int{50, 20, 10, 5, 2, 1}
+	var coins = []int{5, 3, 1}
+	//for i := 1; i < 100; i++ {
+	//	leastCoins(i, coins)
+	//}
+	ans := allPossible(30, coins)
+	fmt.Println(len(ans))
+	u := removeDuplicates(ans)
+	fmt.Println(len(u))
+	if s, err := json.MarshalIndent(u, "", "\t"); err ==
+		nil {
+		fmt.Println(string(s))
+	}
+}

@@ -1,4 +1,6 @@
-package algorithm
+package main
+
+import "fmt"
 
 // find the smallest natural number X that
 // meets X % 3 == 2, X % 5 == 3, X % 7 == 4
@@ -31,9 +33,9 @@ func permu2nums(a []int) []int {
 	return keys
 }
 
-// func main() {
-// 	//fmt.Println(foo())
-// 	a := []int{1, 2, 3, 4, 5}
-// 	b := permu2nums(a)
-// 	fmt.Println(b)
-// }
+func main() {
+	//fmt.Println(foo())
+	a := []int{1, 2, 3, 4, 5}
+	b := permu2nums(a)
+	fmt.Println(b)
+}
