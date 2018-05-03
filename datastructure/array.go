@@ -125,6 +125,24 @@ func (a Array) Min() (min float64) {
 	return
 }
 
+// MinMax return the min value and the max value at one time
+func (a Array) MinMax() (min, max float64) {
+	if len(a) == 0 {
+		log.Fatal("empty array")
+	}
+	min = a[0]
+	max = a[0]
+	for i := 1; i < len(a); i++ {
+		if min > a[i] {
+			min = a[i]
+		}
+		if max < a[i] {
+			max = a[i]
+		}
+	}
+	return min, max
+}
+
 // Argmin return the first index of the minimum value
 func (a Array) Argmin() int {
 	if len(a) == 0 {
@@ -189,6 +207,11 @@ func (a Array) PopulationVariance() float64 {
 // SD calculate the standard deviation
 func (a Array) SD() float64 {
 	return math.Sqrt(a.Variance())
+}
+
+// PopulationSD calculate the population standard deviation
+func (a Array) PopulationSD() float64 {
+	return math.Sqrt(a.PopulationVariance())
 }
 
 // Shuffle do what it says
