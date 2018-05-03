@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Matrix is the 2d-array
+// Matrix is based on Array
 type Matrix struct {
 	data Array
 	rows int
@@ -25,12 +25,14 @@ func NewMatrix(rows, cols int) *Matrix {
 }
 
 // NewMatrixFromArray create a matrix using the array
-func NewMatrixFromArray(a Array) *Matrix {
-	return &Matrix{
+func NewMatrixFromArray(a Array, r, c int) *Matrix {
+	m := Matrix{
 		data: a,
 		rows: -1,
 		cols: -1, // -1 means not set yet
 	}
+	m.ReShape(r, c)
+	return &m
 }
 
 // ReShape set the rows and columns number of the matrix
@@ -193,7 +195,7 @@ func (m Matrix) String() string {
 		s += " " + printLineMoreThan20(m.data[(m.rows-4)*m.cols:(m.rows-3)*m.cols]) + "\n"
 		s += " " + printLineMoreThan20(m.data[(m.rows-3)*m.cols:(m.rows-2)*m.cols]) + "\n"
 		s += " " + printLineMoreThan20(m.data[(m.rows-2)*m.cols:(m.rows-1)*m.cols]) + "]"
-		return s
+		return s + fmt.Sprintf("\nshape: (%d, %d)", m.rows, m.cols)
 	}
 	if m.rows > 20 && m.cols < 20 {
 		s += printLineLessThan20(m.data[0:m.cols]) + "\n"
@@ -205,30 +207,32 @@ func (m Matrix) String() string {
 		s += " " + printLineLessThan20(m.data[(m.rows-4)*m.cols:(m.rows-3)*m.cols]) + "\n"
 		s += " " + printLineLessThan20(m.data[(m.rows-3)*m.cols:(m.rows-2)*m.cols]) + "\n"
 		s += " " + printLineLessThan20(m.data[(m.rows-2)*m.cols:(m.rows-1)*m.cols]) + "]"
-		return s
+		return s + fmt.Sprintf("\nshape: (%d, %d)", m.rows, m.cols)
 	}
 	if m.rows < 20 && m.cols > 20 {
 		for i := 0; i < m.rows; i++ {
-			if i == 0 {
+			switch i {
+			case 0:
 				s += printLineMoreThan20(m.data[0:m.cols]) + "\n"
-			}
-			if i == m.rows - 1 {
+			case m.rows-1:
 				s += " " + printLineMoreThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "]"
+			default:
+				s += " " + printLineMoreThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "\n"
 			}
-			s += " " + printLineMoreThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "\n"
 		}
-		return s
+		return s + fmt.Sprintf("\nshape: (%d, %d)", m.rows, m.cols)
 	}
 	for i := 0; i < m.rows; i++ {
-		if i == 0 {
+		switch i {
+		case 0:
 			s += printLineLessThan20(m.data[0:m.cols]) + "\n"
-		}
-		if i == m.rows - 1 {
+		case m.rows-1:
 			s += " " + printLineLessThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "]"
+		default:
+			s += " " + printLineLessThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "\n"
 		}
-		s += " " + printLineLessThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "\n"
 	}
-	return s
+	return s + fmt.Sprintf("\nshape: (%d, %d)", m.rows, m.cols)
 }
 
 func printLineMoreThan20(line []float64) string {
@@ -238,7 +242,7 @@ func printLineMoreThan20(line []float64) string {
 
 func printFixedLineHolder() string {
 	v := "..."
-	return fmt.Sprintf("[%6v %6v %6v %6v\t...\t...\t...\t%6v %6.v %6v %6v  ]", v, v, v, v, v, v, v, v)
+	return fmt.Sprintf(".%6v %6v %6v %6v\t...\t...\t...\t%6v %6.v %6v %6v  .", v, v, v, v, v, v, v, v)
 }
 
 func printLineLessThan20(line []float64) string {
@@ -251,11 +255,11 @@ func printLineLessThan20(line []float64) string {
 }
 
 func printCustomLineHolder(n int) string {
-	s := "["
+	s := "."
 	v := "..."
 	for i := 0; i < n; i++ {
 		s += fmt.Sprintf("%6v", v)
 	}
-	s += "  ]"
+	s += "  ."
 	return s
 }
