@@ -1,18 +1,34 @@
 package statistics
 
 import (
-	ds "go-learning/datastructure"
 	"errors"
+	ds "go-learning/datastructure"
 )
 
 // StandardScaler (Z-score normalization)
 type StandardScaler struct {
 	mean float64
-	std float64
+	std  float64
+}
+
+// FitFromArray using Array
+func (sc *StandardScaler) FitFromArray(a ds.Array) error {
+	if len(a) == 0 {
+		return errors.New("empty array for fitting")
+	}
+	sc.mean = a.Mean()
+	sc.std = a.PopulationSD()
+	if sc.std == 0 {
+		return errors.New("standard deviation equals 0")
+	}
+	return nil
 }
 
 // Fit using []float64
 func (sc *StandardScaler) Fit(a []float64) error {
+	if len(a) == 0 {
+		return errors.New("empty array for fitting")
+	}
 	arr := ds.Array(a)
 	sc.mean = arr.Mean()
 	sc.std = arr.PopulationSD()
@@ -47,13 +63,30 @@ func (sc *StandardScaler) Transform(a []float64) []float64 {
 	return r
 }
 
+//################################################################
+
 // MinMaxScaler normalization
 type MinMaxScaler struct {
 	min, max float64
 }
 
+// FitWithArray using Array
+func (mm *MinMaxScaler) FitWithArray(a ds.Array) error {
+	if len(a) == 0 {
+		return errors.New("empty array for fitting")
+	}
+	mm.min, mm.max = a.MinMax()
+	if mm.min == mm.max {
+		return errors.New("MinMaxScaler error: min == max")
+	}
+	return nil
+}
+
 // Fit from a []float64
 func (mm *MinMaxScaler) Fit(a []float64) error {
+	if len(a) == 0 {
+		return errors.New("empty array for fitting")
+	}
 	arr := ds.Array(a)
 	mm.min, mm.max = arr.MinMax()
 	if mm.min == mm.max {
