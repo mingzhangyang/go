@@ -20,6 +20,10 @@ func SD(list []interface{}) (float64, error) {
 	return a.SD(), nil
 }
 
+// Covariance
+
+//
+
 // Ttest do t-test
 
 // Tstatistic return t-statistic
