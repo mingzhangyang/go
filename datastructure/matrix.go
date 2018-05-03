@@ -105,7 +105,7 @@ func (m *Matrix) Rows(start, stop, stride int) Matrix {
 	}
 	rs := make(Array, 0)
 	for i := 0; i < n; i++ {
-		t := start + i * m.cols
+		t := start + i * stride * m.cols
 		rs = append(rs, m.data[t:(t+m.cols)]...)
 	}
 	return Matrix{
@@ -179,6 +179,123 @@ func (m *Matrix) T() Matrix {
 		data: nm,
 		rows: m.cols,
 		cols: m.rows,
+	}
+}
+
+// Patch return a subset of the matrix
+// rstart is the row index of the start point; rnum is the number of rows to select
+// cstart is the col index of the start point; cnum is the number of cols to select
+func (m *Matrix) Patch(rstart, rnum, cstart, cnum int) Matrix {
+	if rstart < 0 {
+		rstart += m.rows
+	}
+	if cstart < 0 {
+		cstart += m.cols
+	}
+	a := make(Array, rnum * cnum)
+	var i int
+	for r := 0; r < rnum; r++ {
+		t := (rstart + r) * m.cols + cstart
+		for c := 0; c < cnum; c++ {
+			a[i] = m.data[t+c]
+		}
+	}
+	return Matrix {
+		data: a,
+		rows: rnum,
+		cols: cnum,
+	}
+}
+
+// SelectRows select rows specified in a list
+func (m *Matrix) SelectRows(rs []int) Matrix {
+	for i := range rs {
+		if rs[i] < 0 {
+			rs[i] += m.rows
+		}
+		if rs[i] >= m.rows {
+			log.Panic("invalid number found, out of range")
+		}
+	}
+	a := make(Array, 0)
+	for _, r := range rs {
+		a = append(a, m.data[r * m.cols:(r+1)*m.cols]...)
+	}
+	return Matrix {
+		data: a,
+		rows: len(rs),
+		cols: m.cols,	
+	}
+}
+
+// SelectCols select cols specified in a list
+func (m *Matrix) SelectCols(cs []int) Matrix {
+	for i := range cs {
+		if cs[i] < 0 {
+			cs[i] += m.cols
+		}
+		if cs[i] > m.cols {
+			log.Panic("invalid number found, out of range")
+		}
+	}
+	a := make(Array, len(cs)*m.rows)
+	var i int
+	for r := 0; r < m.rows; r++ {
+		for _, c := range cs {
+			a[i] = m.data[r*m.cols + c]
+			i++
+		}
+	}
+	return Matrix{
+		data: a,
+		rows: m.rows,
+		cols: len(cs),
+	}
+}
+
+// SelectRowsByBool select rows by a list of bool values
+func (m *Matrix) SelectRowsByBool(bs []bool) Matrix {
+	if len(bs) != m.rows {
+		log.Panic("length not match")
+	}
+	a := make(Array, 0)
+	var c int
+	for i, b := range bs {
+		if b {
+			a = append(a, m.data[i*m.cols:(i+1)*m.cols]...)
+			c++
+		}
+	}
+	return Matrix {
+		data: a,
+		rows: c,
+		cols: m.cols,
+	}
+}
+
+// SelectColsByBool select rows by a list of bool values
+func (m *Matrix) SelectColsByBool(bs []bool) Matrix {
+	if len(bs) != m.cols {
+		log.Panic("length not match")
+	}
+	cs := make([]int, 0)
+	for i, b := range bs {
+		if b {
+			cs = append(cs, i)
+		}
+	}
+	a := make(Array, len(cs)*m.rows)
+	var i int
+	for r := 0; r < m.rows; r++ {
+		for _, c := range cs {
+			a[i] = m.data[r*m.cols + c]
+			i++
+		}
+	}
+	return Matrix{
+		data: a,
+		rows: m.rows,
+		cols: len(cs),
 	}
 }
 
