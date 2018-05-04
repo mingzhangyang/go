@@ -1,8 +1,8 @@
 package datastructure
 
 import (
-	"log"
 	"fmt"
+	"log"
 )
 
 // Matrix is based on Array
@@ -17,8 +17,11 @@ type Shape []int
 
 // NewMatrix return a new matrix
 func NewMatrix(rows, cols int) *Matrix {
+	if rows < 1 || cols < 1 {
+		log.Panic("the number of rows or columns can't be negative or 0")
+	}
 	return &Matrix{
-		data: make(Array, rows * cols),
+		data: make(Array, rows*cols),
 		rows: rows,
 		cols: cols,
 	}
@@ -42,18 +45,18 @@ func (m *Matrix) ReShape(r, c int) {
 	}
 	switch {
 	case r > 0 && c > 0:
-		if r *c != len(m.data) {
+		if r*c != len(m.data) {
 			log.Panic("invalid numbers")
 		}
 		m.rows, m.cols = r, c
 	case r == -1 && c > 0:
-		if (len(m.data)) % c != 0 {
+		if (len(m.data))%c != 0 {
 			log.Panic("invalid columns number")
 		}
 		m.rows = len(m.data) / c
 		m.cols = c
 	case r > 0 && c == -1:
-		if len(m.data) % r != 0 {
+		if len(m.data)%r != 0 {
 			log.Panic("invalid rows number")
 		}
 		m.rows = r
@@ -63,7 +66,6 @@ func (m *Matrix) ReShape(r, c int) {
 	}
 }
 
-
 // Shape return the shape of the matrix
 func (m *Matrix) Shape() Shape {
 	s := make(Shape, 2)
@@ -72,16 +74,41 @@ func (m *Matrix) Shape() Shape {
 	return s
 }
 
+// ToArray return the internal data
+func (m *Matrix) ToArray() Array {
+	return m.data
+}
+
+// Loc return the value at the specific indice
+func (m *Matrix) Loc(row, col int) float64 {
+	if row < 0 {
+		row += m.rows
+	}
+	if col < 0 {
+		col += m.cols
+	}
+	if row < 0 || col < 0 {
+		log.Panic("invalid indice, out of range")
+	}
+	if row > m.rows || col > m.cols {
+		log.Panic("invalid indice, out of range")
+	}
+	return m.data[row*m.cols+col]
+}
+
 // Row select a row of the matrix
 // counting of rows from 0
 func (m *Matrix) Row(n int) Array {
 	if n < 0 {
 		n += m.rows
 	}
+	if n < 0 {
+		log.Panic("out of range")
+	}
 	if n >= m.rows {
 		log.Panic("out of range")
 	}
-	return Array(m.data[n * (m.cols) : (n+1) * (m.cols)])
+	return Array(m.data[n*(m.cols) : (n+1)*(m.cols)])
 }
 
 // Rows select rows
@@ -92,11 +119,14 @@ func (m *Matrix) Rows(start, stop, stride int) Matrix {
 	if stop < 0 {
 		stop += m.rows
 	}
+	if start < 0 || stop < 0 {
+		log.Panic("invalid index, out of range")
+	}
 	if stride < 0 {
 		stride = -stride
 		start, stop = stop, start
 	}
-	if (start > stop) {
+	if start > stop {
 		log.Panic("invalid arguments, no rows selected")
 	}
 	var n = (stop - start) / stride
@@ -105,7 +135,7 @@ func (m *Matrix) Rows(start, stop, stride int) Matrix {
 	}
 	rs := make(Array, 0)
 	for i := 0; i < n; i++ {
-		t := start + i * stride * m.cols
+		t := start + i*stride*m.cols
 		rs = append(rs, m.data[t:(t+m.cols)]...)
 	}
 	return Matrix{
@@ -113,19 +143,22 @@ func (m *Matrix) Rows(start, stop, stride int) Matrix {
 		rows: n,
 		cols: m.cols,
 	}
-} 
+}
 
 // Col select a column of the matrix
 func (m *Matrix) Col(n int) Array {
 	if n < 0 {
 		n += m.cols
 	}
+	if n < 0 {
+		log.Panic("out of range")
+	}
 	if n > m.cols {
 		log.Panic("out of range")
 	}
 	c := make(Array, m.rows)
 	for i := 0; i < m.rows; i++ {
-		c[i] = m.data[i * (m.cols) + n]
+		c[i] = m.data[i*(m.cols)+n]
 	}
 	return c
 }
@@ -138,23 +171,26 @@ func (m *Matrix) Cols(start, stop, stride int) Matrix {
 	if stop < 0 {
 		stop += m.rows
 	}
+	if start < 0 || stop < 0 {
+		log.Panic("invalid index, out of range")
+	}
 	if stride < 0 {
 		stride = -stride
 		start, stop = stop, start
 	}
-	if (start > stop) {
+	if start > stop {
 		log.Panic("invalid arguments, no rows selected")
 	}
 	var n = (stop - start) / stride
 	if n == 0 {
 		log.Panic("invalid arguments, no rows selected")
 	}
-	cs := make(Array, n * m.rows)
+	cs := make(Array, n*m.rows)
 	var i int
 	for r := 0; r < m.rows; r++ {
-		t := start + r * m.cols
+		t := start + r*m.cols
 		for c := 0; c < n; c++ {
-			cs[i] = m.data[t + c * stride]
+			cs[i] = m.data[t+c*stride]
 			i++
 		}
 	}
@@ -171,7 +207,7 @@ func (m *Matrix) T() Matrix {
 	var i int
 	for c := 0; c < m.cols; c++ {
 		for r := 0; r < m.rows; r++ {
-			nm[i] = m.data[r * m.cols + c]
+			nm[i] = m.data[r*m.cols+c]
 			i++
 		}
 	}
@@ -192,15 +228,21 @@ func (m *Matrix) Patch(rstart, rnum, cstart, cnum int) Matrix {
 	if cstart < 0 {
 		cstart += m.cols
 	}
-	a := make(Array, rnum * cnum)
+	if rstart < 0 || cstart < 0 {
+		log.Panic("invalid index, out of range")
+	}
+	if rnum < 1 || cnum < 1 {
+		log.Panic("the number of rows or columns can't be negative or 0")
+	}
+	a := make(Array, rnum*cnum)
 	var i int
 	for r := 0; r < rnum; r++ {
-		t := (rstart + r) * m.cols + cstart
+		t := (rstart+r)*m.cols + cstart
 		for c := 0; c < cnum; c++ {
 			a[i] = m.data[t+c]
 		}
 	}
-	return Matrix {
+	return Matrix{
 		data: a,
 		rows: rnum,
 		cols: cnum,
@@ -213,18 +255,18 @@ func (m *Matrix) SelectRows(rs []int) Matrix {
 		if rs[i] < 0 {
 			rs[i] += m.rows
 		}
-		if rs[i] >= m.rows {
+		if rs[i] < 0 || rs[i] >= m.rows {
 			log.Panic("invalid number found, out of range")
 		}
 	}
 	a := make(Array, 0)
 	for _, r := range rs {
-		a = append(a, m.data[r * m.cols:(r+1)*m.cols]...)
+		a = append(a, m.data[r*m.cols:(r+1)*m.cols]...)
 	}
-	return Matrix {
+	return Matrix{
 		data: a,
 		rows: len(rs),
-		cols: m.cols,	
+		cols: m.cols,
 	}
 }
 
@@ -234,7 +276,7 @@ func (m *Matrix) SelectCols(cs []int) Matrix {
 		if cs[i] < 0 {
 			cs[i] += m.cols
 		}
-		if cs[i] > m.cols {
+		if cs[i] < 0 || cs[i] > m.cols {
 			log.Panic("invalid number found, out of range")
 		}
 	}
@@ -242,7 +284,7 @@ func (m *Matrix) SelectCols(cs []int) Matrix {
 	var i int
 	for r := 0; r < m.rows; r++ {
 		for _, c := range cs {
-			a[i] = m.data[r*m.cols + c]
+			a[i] = m.data[r*m.cols+c]
 			i++
 		}
 	}
@@ -266,7 +308,7 @@ func (m *Matrix) SelectRowsByBool(bs []bool) Matrix {
 			c++
 		}
 	}
-	return Matrix {
+	return Matrix{
 		data: a,
 		rows: c,
 		cols: m.cols,
@@ -288,7 +330,7 @@ func (m *Matrix) SelectColsByBool(bs []bool) Matrix {
 	var i int
 	for r := 0; r < m.rows; r++ {
 		for _, c := range cs {
-			a[i] = m.data[r*m.cols + c]
+			a[i] = m.data[r*m.cols+c]
 			i++
 		}
 	}
@@ -331,7 +373,7 @@ func (m Matrix) String() string {
 			switch i {
 			case 0:
 				s += printLineMoreThan20(m.data[0:m.cols]) + "\n"
-			case m.rows-1:
+			case m.rows - 1:
 				s += " " + printLineMoreThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "]"
 			default:
 				s += " " + printLineMoreThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "\n"
@@ -343,7 +385,7 @@ func (m Matrix) String() string {
 		switch i {
 		case 0:
 			s += printLineLessThan20(m.data[0:m.cols]) + "\n"
-		case m.rows-1:
+		case m.rows - 1:
 			s += " " + printLineLessThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "]"
 		default:
 			s += " " + printLineLessThan20(m.data[(i)*m.cols:(i+1)*m.cols]) + "\n"
