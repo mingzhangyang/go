@@ -3,6 +3,7 @@ package statistics
 import (
 	"errors"
 	ds "go-learning/datastructure"
+	"math"
 )
 
 // StandardScaler (Z-score normalization)
@@ -16,11 +17,17 @@ func (sc *StandardScaler) FitFromArray(a ds.Array) error {
 	if len(a) == 0 {
 		return errors.New("empty array for fitting")
 	}
-	sc.mean = a.Mean()
-	sc.std = a.PopulationSD()
+	var m = a.Mean()
+	// sc.std = a.PopulationSD()
+	var t float64
+	for _, v := range a {
+		t += (v - m) * (v - m)
+	}
+	sc.std = math.Sqrt(t / float64(len(a)))
 	if sc.std == 0 {
 		return errors.New("standard deviation equals 0")
 	}
+	sc.mean = m
 	return nil
 }
 
@@ -30,11 +37,17 @@ func (sc *StandardScaler) Fit(a []float64) error {
 		return errors.New("empty array for fitting")
 	}
 	arr := ds.Array(a)
-	sc.mean = arr.Mean()
-	sc.std = arr.PopulationSD()
+	var m = arr.Mean()
+	// sc.std = a.PopulationSD()
+	var t float64
+	for _, v := range arr {
+		t += (v - m) * (v - m)
+	}
+	sc.std = math.Sqrt(t / float64(len(a)))
 	if sc.std == 0 {
 		return errors.New("standard deviation equals 0")
 	}
+	sc.mean = m
 	return nil
 }
 
@@ -44,8 +57,17 @@ func (sc *StandardScaler) FitFromCustomArray(a []interface{}) error {
 	if err != nil {
 		return err
 	}
-	sc.mean = arr.Mean()
-	sc.std = arr.PopulationSD()
+	var m = arr.Mean()
+	// sc.std = a.PopulationSD()
+	var t float64
+	for _, v := range arr {
+		t += (v - m) * (v - m)
+	}
+	sc.std = math.Sqrt(t / float64(len(a)))
+	if sc.std == 0 {
+		return errors.New("standard deviation equals 0")
+	}
+	sc.mean = m
 	return nil
 }
 

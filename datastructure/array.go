@@ -184,11 +184,11 @@ func (a Array) Variance() float64 {
 		log.Panic("empty array")
 	}
 	m := a.Mean()
-	var v float64
+	var t float64
 	for _, v := range a {
-		v += (v - m) * (v - m)
+		t += (v - m) * (v - m)
 	}
-	return v / (float64(len(a)) - 1)
+	return t / (float64(len(a)) - 1)
 }
 
 // PopulationVariance calculate the population variance
@@ -197,11 +197,11 @@ func (a Array) PopulationVariance() float64 {
 		log.Panic("empty array")
 	}
 	m := a.Mean()
-	var v float64
+	var t float64
 	for _, v := range a {
-		v += (v - m) * (v - m)
+		t += (v - m) * (v - m)
 	}
-	return v / float64(len(a))
+	return t / float64(len(a))
 }
 
 // SD calculate the standard deviation
