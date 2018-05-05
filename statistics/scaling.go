@@ -12,6 +12,11 @@ type StandardScaler struct {
 	std  float64
 }
 
+// NewStandardScaler works as new(StandardScaler)
+func NewStandardScaler() *StandardScaler {
+	return new(StandardScaler)
+}
+
 // FitFromArray using Array
 func (sc *StandardScaler) FitFromArray(a ds.Array) error {
 	if len(a) == 0 {
@@ -90,6 +95,11 @@ func (sc *StandardScaler) Transform(a []float64) []float64 {
 // MinMaxScaler normalization
 type MinMaxScaler struct {
 	min, max float64
+}
+
+// NewMinMaxScaler works as new(MinMaxScaler)
+func NewMinMaxScaler() *MinMaxScaler {
+	return new(MinMaxScaler)
 }
 
 // FitWithArray using Array
