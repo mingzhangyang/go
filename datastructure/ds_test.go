@@ -19,3 +19,13 @@ func TestArray(t *testing.T) {
 	t.Logf("reversed: %v\n", s)
 	t.Logf("slice(1, 3): %v\n", s.Slice(1, 3))
 }
+
+func TestMatix(t *testing.T) {
+	a := make(Array, 1200)
+	m := NewMatrixFromArray(a, 100, 12)
+	t.Log(m)
+	m.ReShape(24, 50)
+	t.Log(m)
+	m.ReShape(5, 240)
+	t.Log(m)
+}
