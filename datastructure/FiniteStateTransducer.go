@@ -1,4 +1,4 @@
-package algorithm
+package datastructure
 
 // FST - finite state transducer
 type FST struct {
