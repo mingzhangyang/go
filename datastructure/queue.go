@@ -83,7 +83,7 @@ func (q *Queue) DeQueue() (string, bool) {
 	if q.length == 0 {
 		return "", false
 	}
-	str := q.head.Value
+	str := q.head.Value.(string)
 	newHead := q.head.Next
 	q.head = newHead
 	q.length--
@@ -96,10 +96,10 @@ func (q Queue) String() string {
 		return ""
 	}
 	n := q.head
-	str := n.Value
+	str := n.Value.(string)
 	for n.Next != nil {
 		n = n.Next
-		str += (" - " + n.Value)
+		str += (" - " + n.Value.(string))
 	}
 	// 	n := q.head
 	// 	str := n.Value

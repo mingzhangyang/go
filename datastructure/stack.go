@@ -30,7 +30,7 @@ func (s *Stack) Pop() (string, bool) {
 	n := s.Entry
 	s.Entry = n.Next
 	s.length--
-	return n.Value, true
+	return n.Value.(string), true
 }
 
 // String method define custom output
@@ -39,10 +39,10 @@ func (s Stack) String() string {
 		return ""
 	}
 	n := s.Entry
-	str := n.Value
+	str := n.Value.(string)
 	for n.Next != nil {
 		n = n.Next
-		str += (" - " + n.Value)
+		str += (" - " + n.Value.(string))
 	}
 	return str
 }
