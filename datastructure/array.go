@@ -9,6 +9,7 @@ import (
 )
 
 // Array is the numpy ndarray couterpart in Golang
+// To make life easier, Array only support float64
 type Array []float64
 
 // NewArray create a array with the specified length
@@ -63,6 +64,10 @@ func NewArrayFrom(list []interface{}) (Array, error) {
 	}
 }
 
+/************************************************************************
+* Sum, Mean, Max, ArgMax, Min, ArgMin, MinMax, Median, etc
+************************************************************************/
+
 // Sum return the sum of all the elements in the array
 func (a Array) Sum() (sum float64) {
 	if len(a) == 0 {
@@ -94,8 +99,8 @@ func (a Array) Max() (max float64) {
 	return
 }
 
-// Argmax return the first index of the maximum value
-func (a Array) Argmax() int {
+// ArgMax return the first index of the maximum value
+func (a Array) ArgMax() int {
 	if len(a) == 0 {
 		log.Panic("empty array")
 	}
@@ -125,6 +130,25 @@ func (a Array) Min() (min float64) {
 	return
 }
 
+// ArgMin return the first index of the minimum value
+func (a Array) ArgMin() int {
+	if len(a) == 0 {
+		log.Panic("empty array")
+	}
+	var (
+		i int
+		v float64
+	)
+	v = a[0]
+	for j, f := range a {
+		if f < v {
+			i = j
+			v = f
+		}
+	}
+	return i
+}
+
 // MinMax return the min value and the max value at one time
 func (a Array) MinMax() (min, max float64) {
 	if len(a) == 0 {
@@ -143,25 +167,6 @@ func (a Array) MinMax() (min, max float64) {
 	return min, max
 }
 
-// Argmin return the first index of the minimum value
-func (a Array) Argmin() int {
-	if len(a) == 0 {
-		log.Panic("empty array")
-	}
-	var (
-		i int
-		v float64
-	)
-	v = a[0]
-	for j, f := range a {
-		if f < v {
-			i = j
-			v = f
-		}
-	}
-	return i
-}
-
 // Median return the median number
 func (a Array) Median() float64 {
 	if len(a) == 0 {
@@ -176,6 +181,11 @@ func (a Array) Median() float64 {
 	}
 	return a[(len(a)-1)/2]
 }
+
+/***********************************************************************
+* Basic statistic calculation: Variance, PopulationVariance,
+* SD(standard deviation), PopulationSD, Normalization, etc.
+************************************************************************/
 
 // Variance return the variance of the array
 // this is the sample variance
@@ -214,6 +224,43 @@ func (a Array) PopulationSD() float64 {
 	return math.Sqrt(a.PopulationVariance())
 }
 
+// StandardNormalization normalize the array in place
+func (a Array) StandardNormalization() {
+	if len(a) == 0 {
+		log.Panic("empty array")
+	}
+	var sum float64
+	for _, v := range a {
+		sum += v
+	}
+	var mean = sum / float64(len(a))
+	var variance float64
+	for _, v := range a {
+		variance += (v - mean) * (v - mean)
+	}
+	variance /= float64(len(a))
+	var sd = math.Sqrt(variance)
+	for i, v := range a {
+		a[i] = (v - mean) / sd
+	}
+}
+
+// MinMaxNormalization normalize the array in place
+func (a Array) MinMaxNormalization() {
+	if len(a) == 0 {
+		log.Panic("empty array")
+	}
+	min, max := a.MinMax()
+	d := max - min
+	for i, v := range a {
+		a[i] = (v - min) / d
+	}
+}
+
+/**************************************************************************
+* Shuffle, Sample, Split, etc.
+***************************************************************************/
+
 // Shuffle do what it says
 // source: https://github.com/golang/go/wiki/SliceTricks
 func (a Array) Shuffle() {
@@ -223,63 +270,31 @@ func (a Array) Shuffle() {
 	}
 }
 
-// Push an elment to the end of the array
-// In the definition of method, one can't reassign `a`,
-// which is just a copy of the original data, even `a` is
-// pointer or reference
-func (a Array) Push(x float64) Array {
-	return append(a, x)
-}
-
-// Pop an element from the end of the array
-// This is meaningless
-func (a Array) Pop() Array {
-	return a[:len(a)-1]
-}
-
-// Insert one or more elements at specified index
-func (a Array) Insert(idx int, v ...float64) Array {
-	if idx < 0 {
-		idx += len(a)
+// Sample picks up n elements from the array
+func (a Array) Sample(n int) Array {
+	if n < 1 {
+		log.Panic("invalid argument, n should be positive")
 	}
-	if idx > len(a)-1 {
-		log.Panic("invalid index")
+	if n > len(a) {
+		log.Panic("out of range")
 	}
-	return append(a[:idx], append(v, a[idx:]...)...)
-}
-
-// Concat join two array
-func (a Array) Concat(b Array) Array {
-	return append(a, b...)
-}
-
-// Drop one or more elements starts from the target index
-func (a Array) Drop(index, count int) Array {
-	if index < 0 {
-		index += len(a)
+	if n == 1 {
+		return Array{a[rand.Intn(len(a))]}
 	}
-	if count < 0 {
-		log.Panic("invalid count, a positive int expected")
+	
+	res := make(Array, n)
+	m := make(map[int]bool)
+	var c int
+	for c < n {
+		t := rand.Intn(len(a))
+		if !m[t] {
+			m[t] = true
+			res[c] = a[t]
+			c++
+		}
 	}
-	if index >= len(a) || index+count >= len(a) {
-		log.Panic("invalid index or count, out of range")
-	}
-	return append(a[:index], a[(index+count):]...)
-}
-
-// Splice do more than Drop
-func (a Array) Splice(index, count int, v ...float64) Array {
-	if index < 0 {
-		index += len(a)
-	}
-	if count < 0 {
-		log.Panic("invalid count, a positive int expected")
-	}
-	if index >= len(a) || index+count >= len(a) {
-		log.Panic("invalid index or count, out of range")
-	}
-	return append(a[:index], append(v, a[(index+count):]...)...)
-}
+	return res
+} 
 
 // Split an array into two arrays
 func (a Array) Split(ratio float64) (Array, Array) {
@@ -300,13 +315,90 @@ func (a Array) Split(ratio float64) (Array, Array) {
 	return ls, rs
 }
 
-// Slice return a new slice with a slice with its own underlying storage
+/****************************************************************************
+* Array manipulations: Push, Pop, Insert, Concat, Drop, Splice, Slice, etc.
+* These manipulations return a new Array. If the array is large, it will be 
+* expensive to do the job.
+****************************************************************************/
+
+// Push an elment to the end of the array
+// In the definition of method, one can't reassign `a`,
+// which is just a copy of the original data, even `a` is
+// pointer or reference
+func (a Array) Push(x float64) Array {
+	return append(a, x)
+}
+
+// Pop an element from the end of the array
+// This is meaningless
+func (a Array) Pop() Array {
+	return a[:len(a)-1]
+}
+
+// Insert one or more elements at specified index
+func (a Array) Insert(idx int, v ...float64) Array {
+	if idx < 0 {
+		idx += len(a)
+	}
+	if idx < 0 {
+		log.Panic("invalid index")
+	}
+	if idx > len(a)-1 {
+		log.Panic("invalid index")
+	}
+	return append(a[:idx], append(v, a[idx:]...)...)
+}
+
+// Concat join two array
+func (a Array) Concat(b Array) Array {
+	return append(a, b...)
+}
+
+// Drop one or more elements starts from the target index
+func (a Array) Drop(index, count int) Array {
+	if index < 0 {
+		index += len(a)
+	}
+	if index < 0 {
+		log.Panic("invalid index")
+	}
+	if count < 0 {
+		log.Panic("invalid count, a positive int expected")
+	}
+	if index >= len(a) || index+count >= len(a) {
+		log.Panic("invalid index or count, out of range")
+	}
+	return append(a[:index], a[(index+count):]...)
+}
+
+// Splice do more than Drop
+func (a Array) Splice(index, count int, v ...float64) Array {
+	if index < 0 {
+		index += len(a)
+	}
+	if index < 0 {
+		log.Panic("invalid index")
+	}
+	if count < 0 {
+		log.Panic("invalid count, a positive int expected")
+	}
+	if index >= len(a) || index+count >= len(a) {
+		log.Panic("invalid index or count, out of range")
+	}
+	return append(a[:index], append(v, a[(index+count):]...)...)
+}
+
+
+// Slice return a new copy of a fragment of or the whole target slice
 func (a Array) Slice(m, n int) Array {
 	if m < 0 {
 		m += len(a)
 	}
 	if n < 0 {
 		n += len(a)
+	}
+	if m < 0 || n < 0 {
+		log.Panic("invalid index")
 	}
 	if m >= len(a) || n > len(a) {
 		log.Panic("out of range")
@@ -317,6 +409,50 @@ func (a Array) Slice(m, n int) Array {
 	s := make(Array, 0)
 	return append(s, a[m:n]...)
 }
+
+/***************************************************************************
+* Map, Filter, Reduce, ForEach, etc
+***************************************************************************/
+
+// Map works like the map function of array in JS
+func (a Array) Map(fn func(float64, int)interface{}) []interface{} {
+	res := make([]interface{}, len(a))
+	for i, v := range a {
+		res[i] = fn(v, i)
+	}
+	return res
+}
+
+// Filter works like the filter function of array in JS
+func (a Array) Filter(fn func(float64, int)bool) []interface{} {
+	res := make([]interface{}, 0)
+	for i, v := range a {
+		if fn(v, i) {
+			res = append(res, v)
+		}
+	}
+	return res
+}
+
+// Reduce does reduce should do
+func (a Array) Reduce(fn func(float64, float64)float64, acc float64) float64 {
+	for _, v := range a {
+		acc = fn(acc, v)
+	}
+	return acc
+}
+
+// ForEach invoke the callback function at each iteration
+func (a Array) ForEach(fn func(float64, int)) {
+	for i, v := range a {
+		fn(v, i)
+	}
+}
+
+
+/***************************************************************************
+* Sort, Reverse, etc
+***************************************************************************/
 
 // Reverse the array in place
 // source: https://github.com/golang/go/wiki/SliceTricks
