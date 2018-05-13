@@ -2,11 +2,13 @@ package main
 
 import "fmt"
 
+// Tm structure
 type Tm struct {
 	max    int
 	second int
 }
 
+// FindSecondMaximum find the second maximumn
 func FindSecondMaximum(a []int) Tm {
 	var t = Tm{0, 0}
 	for _, num := range a {
