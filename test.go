@@ -20,6 +20,9 @@ func main() {
 	// m.ReShape(5, 240)
 	// fmt.Println(m)
 	a := ds.Array{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+	m := a.ToMatrix(3, 4)
+	fmt.Println(*m)
+	fmt.Println((m.T()))
 	d := ds.NewDataCube(a, 2, 2, 3)
 
 	fmt.Println(d)

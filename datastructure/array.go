@@ -12,9 +12,34 @@ import (
 // To make life easier, Array only support float64
 type Array []float64
 
-// NewArray create a array with the specified length
+// NewArray create an array with the specified length
 func NewArray(n int) Array {
 	return make(Array, n)
+}
+
+// NewRandArray creae an array with random number
+func NewRandArray(n int) Array {
+	if n < 0 {
+		log.Panic("invalid argument, a postive number expected")
+	}
+	a := make([]float64, n)
+	for i := 0; i < n; i++ {
+		a[i] = rand.NormFloat64()
+	}
+	return Array(a)
+}
+
+// LinSpace create a linear space
+func LinSpace(start, stop float64, num int) Array {
+	if num < 0 {
+		log.Panic("invalid argument, number of elements should not be negative")
+	}
+	step := (stop - start) / float64(num)
+	res := make(Array, num)
+	for i := 0; i < num; i++ {
+		res[i] = start + float64(i)*step
+	}
+	return res
 }
 
 // NewArrayFrom return an array from the input

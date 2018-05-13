@@ -95,6 +95,7 @@ func (m *Matrix) ToArray() Array {
 }
 
 // Loc return the value at the specific indice
+// index of the element (r, c) in the internal array is r * cols + c
 func (m *Matrix) Loc(row, col int) float64 {
 	if row < 0 {
 		row += m.rows
@@ -109,6 +110,24 @@ func (m *Matrix) Loc(row, col int) float64 {
 		log.Panic("invalid indice, out of range")
 	}
 	return m.data[row*m.cols+col]
+}
+
+// SetValue modify the element at row r and col c
+func (a *Matrix) SetValue(v float64, r, c int) {
+	if r < 0 {
+		r += a.rows
+	}
+	if c < 0 {
+		c += a.cols
+	}
+	if r < 0 || c < 0 {
+		log.Panic("invalid row or col index")
+	}
+	if r > a.rows || c > a.cols {
+		log.Panic("invalid arguments, out of range")
+	}
+	idx := r*a.cols + c
+	a.data[idx] = v
 }
 
 // Row select a row of the matrix
@@ -219,12 +238,21 @@ func (m *Matrix) Cols(start, stop, stride int) Matrix {
 // T transpose a matrix
 func (m *Matrix) T() Matrix {
 	nm := make(Array, len(m.data))
-	var i int
-	for c := 0; c < m.cols; c++ {
-		for r := 0; r < m.rows; r++ {
-			nm[i] = m.data[r*m.cols+c]
-			i++
-		}
+	// var i int
+	// for c := 0; c < m.cols; c++ {
+	// 	for r := 0; r < m.rows; r++ {
+	// 		nm[i] = m.data[r*m.cols+c]
+	// 		i++
+	// 	}
+	// }
+	var r, c, idx int
+	for j := 0; j < len(m.data); j++ {
+		r = j / m.cols
+		c = j % m.cols
+		// set the index of the element in the new matrix
+		// index = rowIndex * number of elements in a column + colIndex
+		idx = c*m.rows + r
+		nm[idx] = m.data[j]
 	}
 	return Matrix{
 		data: nm,
