@@ -74,6 +74,21 @@ func (m *Matrix) Shape() Shape {
 	return s
 }
 
+// NumOfRows return the number of rows of the matrix
+func (m *Matrix) NumOfRows() int {
+	return m.rows
+}
+
+// NumOfCols return the number of columns of the matrix
+func (m *Matrix) NumOfCols() int {
+	return m.cols
+}
+
+// Counts return the total number of elements in the matrix
+func (m *Matrix) Counts() int {
+	return len(m.data)
+}
+
 // ToArray return the internal data
 func (m *Matrix) ToArray() Array {
 	return m.data
@@ -218,10 +233,10 @@ func (m *Matrix) T() Matrix {
 	}
 }
 
-// Patch return a subset of the matrix
+// Region return a subset of the matrix
 // rstart is the row index of the start point; rnum is the number of rows to select
 // cstart is the col index of the start point; cnum is the number of cols to select
-func (m *Matrix) Patch(rstart, rnum, cstart, cnum int) Matrix {
+func (m *Matrix) Region(rstart, rnum, cstart, cnum int) Matrix {
 	if rstart < 0 {
 		rstart += m.rows
 	}
@@ -338,6 +353,42 @@ func (m *Matrix) SelectColsByBool(bs []bool) Matrix {
 		data: a,
 		rows: m.rows,
 		cols: len(cs),
+	}
+}
+
+// Concat a matrix along axis = 0 or axis = 1
+// axis = 0 along rows; axis = 1 along columns
+func (m *Matrix) Concat(mat *Matrix, axis int) *Matrix {
+	switch axis {
+	case 0:
+		if m.cols != mat.cols {
+			log.Panic("column length not matched")
+		}
+		a := append(m.data, (mat.data)...)
+		return &Matrix{
+			data: a,
+			rows: m.rows + mat.rows,
+			cols: m.cols,
+		}
+	case 1:
+		if m.rows != mat.rows {
+			log.Panic("row length not matched")
+		}
+		a := make(Array, 0)
+		nc1 := m.cols
+		nc2 := mat.cols
+		for i := 0; i < m.rows; i++ {
+			a = append(a, (m.data)[nc1*i:nc1*(i+1)]...)
+			a = append(a, (mat.data)[nc2*i:nc2*(i+1)]...)
+		}
+		return &Matrix{
+			data: a,
+			rows: m.rows,
+			cols: m.cols + mat.cols,
+		}
+	default:
+		log.Panic("invalid axis, please select 0 or 1")
+		return nil // zero value of pointer is nil
 	}
 }
 

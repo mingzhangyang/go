@@ -64,6 +64,42 @@ func NewArrayFrom(list []interface{}) (Array, error) {
 	}
 }
 
+// ToMatrix create a matrix using the array as internal data
+func (a Array) ToMatrix(r, c int) *Matrix {
+	switch {
+	case r > 0 && c > 0:
+		if r*c != len(a) {
+			log.Panic("invalid arguments")
+		}
+		return &Matrix{
+			data: a,
+			rows: r,
+			cols: c,
+		}
+	case r == -1 && c > 0:
+		if len(a)%c != 0 {
+			log.Panic("invalid column number")
+		}
+		return &Matrix{
+			data: a,
+			rows: len(a) / c,
+			cols: c,
+		}
+	case r > 0 && c == -1:
+		if len(a)%r != 0 {
+			log.Panic("invalid row number")
+		}
+		return &Matrix{
+			data: a,
+			rows: r,
+			cols: len(a) / r,
+		}
+	default:
+		log.Panic("invalid arguments")
+		return nil
+	}
+}
+
 /************************************************************************
 * Sum, Mean, Max, ArgMax, Min, ArgMin, MinMax, Median, etc
 ************************************************************************/
@@ -281,7 +317,7 @@ func (a Array) Sample(n int) Array {
 	if n == 1 {
 		return Array{a[rand.Intn(len(a))]}
 	}
-	
+
 	res := make(Array, n)
 	m := make(map[int]bool)
 	var c int
@@ -294,7 +330,7 @@ func (a Array) Sample(n int) Array {
 		}
 	}
 	return res
-} 
+}
 
 // Split an array into two arrays
 func (a Array) Split(ratio float64) (Array, Array) {
@@ -317,7 +353,7 @@ func (a Array) Split(ratio float64) (Array, Array) {
 
 /****************************************************************************
 * Array manipulations: Push, Pop, Insert, Concat, Drop, Splice, Slice, etc.
-* These manipulations return a new Array. If the array is large, it will be 
+* These manipulations return a new Array. If the array is large, it will be
 * expensive to do the job.
 ****************************************************************************/
 
@@ -388,7 +424,6 @@ func (a Array) Splice(index, count int, v ...float64) Array {
 	return append(a[:index], append(v, a[(index+count):]...)...)
 }
 
-
 // Slice return a new copy of a fragment of or the whole target slice
 func (a Array) Slice(m, n int) Array {
 	if m < 0 {
@@ -415,7 +450,7 @@ func (a Array) Slice(m, n int) Array {
 ***************************************************************************/
 
 // Map works like the map function of array in JS
-func (a Array) Map(fn func(float64, int)interface{}) []interface{} {
+func (a Array) Map(fn func(float64, int) interface{}) []interface{} {
 	res := make([]interface{}, len(a))
 	for i, v := range a {
 		res[i] = fn(v, i)
@@ -424,7 +459,7 @@ func (a Array) Map(fn func(float64, int)interface{}) []interface{} {
 }
 
 // Filter works like the filter function of array in JS
-func (a Array) Filter(fn func(float64, int)bool) []interface{} {
+func (a Array) Filter(fn func(float64, int) bool) []interface{} {
 	res := make([]interface{}, 0)
 	for i, v := range a {
 		if fn(v, i) {
@@ -435,7 +470,7 @@ func (a Array) Filter(fn func(float64, int)bool) []interface{} {
 }
 
 // Reduce does reduce should do
-func (a Array) Reduce(fn func(float64, float64)float64, acc float64) float64 {
+func (a Array) Reduce(fn func(float64, float64) float64, acc float64) float64 {
 	for _, v := range a {
 		acc = fn(acc, v)
 	}
@@ -448,7 +483,6 @@ func (a Array) ForEach(fn func(float64, int)) {
 		fn(v, i)
 	}
 }
-
 
 /***************************************************************************
 * Sort, Reverse, etc
