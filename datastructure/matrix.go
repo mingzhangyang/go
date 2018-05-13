@@ -420,6 +420,13 @@ func (m *Matrix) Concat(mat *Matrix, axis int) *Matrix {
 	}
 }
 
+// Map is a element wise mapping
+func (m *Matrix) Map(foo func(float64)float64) {
+	for i := range m.data {
+		m.data[i] = foo(m.data[i])
+	}
+}
+
 // String make the matrix to be printed as a matrix
 func (m Matrix) String() string {
 	s := "["

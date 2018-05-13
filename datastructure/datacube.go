@@ -83,6 +83,49 @@ func (d *DataCube) SubGrid(wRange, lRange Range) *DataCube {
 	}
 }
 
+// Shape return the shape of the a data cube
+// [width, length, height]
+func (d *DataCube) Shape() Shape {
+	return Shape{d.w, d.l, d.h}
+}
+
+// Multiply another datacube with the same shape
+// Element wise multiplication
+func (d *DataCube) Multiply(d1 *DataCube) *DataCube {
+	s := d.Shape()
+	s1 := d1.Shape()
+	for i := range s {
+		if s[i] != s1[i] {
+			log.Panic("the two cube must be of the same shape")
+		}
+	}
+	a := make(Array, d.w*d.l*d.h)
+	for i := range d.data {
+		a[i] = d.data[i] * d1.data[i]
+	}
+	return &DataCube{
+		data: a,
+		w:    d.w,
+		l:    d.l,
+		h:    d.h,
+	}
+}
+
+// ReduceDimension reduce the height into 1, a cube turns to a matrix
+func (d *DataCube) ReduceDimension() *Matrix {
+	res := make(Array, d.w*d.l)
+	var a Array
+	for i := 0; i < len(res); i++ {
+		a = d.data[i*d.h : (i+1)*d.h]
+		res[i] = a.Sum()
+	}
+	return &Matrix{
+		data: a,
+		rows: d.w,
+		cols: d.l,
+	}
+}
+
 // String print datacube friendly
 func (d DataCube) String() string {
 	switch d.w {
