@@ -113,21 +113,21 @@ func (m *Matrix) Loc(row, col int) float64 {
 }
 
 // SetValue modify the element at row r and col c
-func (a *Matrix) SetValue(v float64, r, c int) {
+func (m *Matrix) SetValue(v float64, r, c int) {
 	if r < 0 {
-		r += a.rows
+		r += m.rows
 	}
 	if c < 0 {
-		c += a.cols
+		c += m.cols
 	}
 	if r < 0 || c < 0 {
 		log.Panic("invalid row or col index")
 	}
-	if r > a.rows || c > a.cols {
+	if r > m.rows || c > m.cols {
 		log.Panic("invalid arguments, out of range")
 	}
-	idx := r*a.cols + c
-	a.data[idx] = v
+	idx := r*m.cols + c
+	m.data[idx] = v
 }
 
 // Row select a row of the matrix
