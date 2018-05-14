@@ -421,9 +421,32 @@ func (m *Matrix) Concat(mat *Matrix, axis int) *Matrix {
 }
 
 // Map is a element wise mapping
-func (m *Matrix) Map(foo func(float64)float64) {
+func (m *Matrix) Map(foo func(float64) float64) {
 	for i := range m.data {
 		m.data[i] = foo(m.data[i])
+	}
+}
+
+// Multiply another matrix
+func (m *Matrix) Multiply(n *Matrix) *Matrix {
+	if m.cols != n.rows {
+		log.Panic("can't multiply the two matrix")
+	}
+	var res = make(Array, m.rows*n.cols)
+	var r, c int
+	var idx int
+	for i := 0; i < len(m.data); i++ {
+		r = i / m.cols
+		c = i % m.cols
+		for j := 0; j < n.cols; j++ {
+			idx = r*n.cols + j
+			res[idx] += (m.data[i] * n.data[c*n.cols+j])
+		}
+	}
+	return &Matrix{
+		data: res,
+		rows: m.rows,
+		cols: n.cols,
 	}
 }
 
@@ -482,18 +505,18 @@ func (m Matrix) String() string {
 
 func printLineMoreThan20(line []float64) string {
 	n := len(line)
-	return fmt.Sprintf("[%6.2f %6.2f %6.2f %6.2f\t...\t...\t...\t%6.2f %6.2f %6.2f %6.2f  ]", line[0], line[1], line[2], line[3], line[n-4], line[n-3], line[n-2], line[n-1])
+	return fmt.Sprintf("[%16.2f  %16.2f  %16.2f  %16.2f \t...\t...\t...\t%16.2f  %16.2f  %16.2f  %16.2f ]", line[0], line[1], line[2], line[3], line[n-4], line[n-3], line[n-2], line[n-1])
 }
 
 func printFixedLineHolder() string {
 	v := "..."
-	return fmt.Sprintf(".%6v %6v %6v %6v\t...\t...\t...\t%6v %6.v %6v %6v  .", v, v, v, v, v, v, v, v)
+	return fmt.Sprintf(".%16v  %16v  %16v  %16v \t...\t...\t...\t%16v  %16v  %16v  %16v   .", v, v, v, v, v, v, v, v)
 }
 
 func printLineLessThan20(line []float64) string {
 	s := "["
 	for _, v := range line {
-		s += fmt.Sprintf("%6.2f", v)
+		s += fmt.Sprintf("%16.2f ", v)
 	}
 	s += "  ]"
 	return s
@@ -503,7 +526,7 @@ func printCustomLineHolder(n int) string {
 	s := "."
 	v := "..."
 	for i := 0; i < n; i++ {
-		s += fmt.Sprintf("%6v", v)
+		s += fmt.Sprintf("%20v ", v)
 	}
 	s += "  ."
 	return s
