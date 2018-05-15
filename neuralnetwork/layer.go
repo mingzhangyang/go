@@ -76,6 +76,7 @@ func (l Layer) Update() {
 
 }
 
+// Dropout is a means to reduce over fitting
 func (l Layer) Dropout(ratio float32) {
 
 }
