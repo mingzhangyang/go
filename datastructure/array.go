@@ -546,3 +546,45 @@ func (a Array) Sort(n int) {
 		a.Reverse()
 	}
 }
+
+/******************************************************************************
+* array arithmetics
+******************************************************************************/
+
+// AddScalar add a scalar to each element of the array 
+// wrok in-place
+func (a Array) AddScalar (v float64) {
+	for i := 0; i < len(a); i++ {
+		a[i] += v
+	}
+}
+
+// AddArray add another array with the same length
+// work in-place
+func (a Array) AddArray (b Array) {
+	if len(a) != len(b) {
+		log.Panic("length not matched")
+	}
+	for i := 0; i < len(a); i++ {
+		a[i] += b[i]
+	}
+}
+
+// MultiplyScalar multiply a scalar to each element of the array
+// work in-place
+func (a Array) MultiplyScalar(v float64) {
+	for i := range a {
+		a[i] *= v
+	}
+}
+
+// MultiplyArray multiply another array with the same length
+// work in-place
+func (a Array) MultiplyArray(b Array) {
+	if len(a) != len(b) {
+		log.Panic("length not matched")
+	}
+	for i := range a {
+		a[i] *= b[i]
+	}
+}
