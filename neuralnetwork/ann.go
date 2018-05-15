@@ -5,6 +5,8 @@ var defultConfig Config
 func init() {
 	defultConfig = Config{
 		"activation": "relu",
+		"loss": "categorical_crossentropy",
+		"metrics": "accuracy", // a string with fields separated by comma
 	}
 }
 
