@@ -421,9 +421,16 @@ func (m *Matrix) Concat(mat *Matrix, axis int) *Matrix {
 }
 
 // Map is a element wise mapping
-func (m *Matrix) Map(foo func(float64) float64) {
+// It is better to not change the original matrix in-place
+func (m *Matrix) Map(foo func(float64) float64) *Matrix {
+	a := make(Array, len(m.data))
 	for i := range m.data {
-		m.data[i] = foo(m.data[i])
+		a[i] = foo(m.data[i])
+	}
+	return &Matrix{
+		data: a,
+		rows: m.rows,
+		cols: m.cols,
 	}
 }
 
