@@ -3,7 +3,7 @@ package utils
 import "fmt"
 
 type cell struct {
-	pre [3]bool // 0: up-left; 1: up; 2: left
+	pre   [3]bool // 0: up-left; 1: up; 2: left
 	value int
 }
 
@@ -46,20 +46,21 @@ func EditDistance(s1, s2 string) int {
 			}
 			t = min(c0, c1, c2)
 			cur = cell{[3]bool{}, t}
-			
-			if t - table[i-1][j].value == 1 {
+
+			if t == c1 {
 				cur.pre[1] = true
 			}
-			if t - table[i][j-1].value == 1 {
+			if t == c2 {
 				cur.pre[2] = true
 			}
 			switch {
-			case cur.pre[1] == false && cur.pre[2] == false:
+			case t-table[i-1][j-1].value == 1:
 				cur.pre[0] = true
-			case t - table[i-1][j-1].value == 1:
-				cur.pre[0] = true
+			case t-table[i-1][j-1].value == 0:
+				if t != c1 && t != c2 {
+					cur.pre[0] = true
+				}
 			}
-
 			table[i][j] = cur
 		}
 	}
