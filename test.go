@@ -3,7 +3,8 @@ package main
 import "fmt"
 
 // import "go-learning/neuralnetwork"
-import ds "go-learning/datastructure"
+// import ds "go-learning/datastructure"
+import "go-learning/models"
 
 func init() {
 	fmt.Println("init in main invoked")
@@ -26,10 +27,15 @@ func main() {
 	// d := ds.NewDataCube(a, 2, 2, 3)
 
 	// fmt.Println(d)
-	a := ds.Array{10, 90, 70, 80, 10, 20}
-	b := ds.Array{3, 2, 1, 5, 5, 4, 7, 3, 6, 9, 6, 8}
-	m1 := a.ToMatrix(2, 3)
-	m2 := b.ToMatrix(3, 4)
-	m3 := m1.Multiply(m2)
-	fmt.Println(*m3)
+	// a := ds.Array{10, 90, 70, 80, 10, 20}
+	// b := ds.Array{3, 2, 1, 5, 5, 4, 7, 3, 6, 9, 6, 8}
+	// m1 := a.ToMatrix(2, 3)
+	// m2 := b.ToMatrix(3, 4)
+	// m3 := m1.Multiply(m2)
+	// fmt.Println(*m3)
+
+	_, m2, list := models.EncodeFile("./datasets/pg10.txt")
+	for i := range list {
+		fmt.Printf("code: %-30s counts: %-10d\n", m2[i], list[i])
+	}
 }
