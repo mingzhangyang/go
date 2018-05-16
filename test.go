@@ -6,12 +6,17 @@ import "fmt"
 // import ds "go-learning/datastructure"
 import "go-learning/models"
 
-func init() {
-	fmt.Println("init in main invoked")
+// func init() {
+// 	fmt.Println("init in main invoked")
+// }
+
+type rec struct {
+	word string
+	count int
 }
 
 func main() {
-	fmt.Println("main invoked")
+	// fmt.Println("main invoked")
 	// fmt.Println(neuralnetwork.ReLU)
 	// a := make(ds.Array, 1200)
 	// m := ds.NewMatrixFromArray(a, 100, 12)
@@ -34,8 +39,22 @@ func main() {
 	// m3 := m1.Multiply(m2)
 	// fmt.Println(*m3)
 
-	_, m2, list := models.EncodeFile("./datasets/pg10.txt")
-	for i := range list {
-		fmt.Printf("code: %-30s counts: %-10d\n", m2[i], list[i])
+	m := models.ScanFile("./datasets/pg10.txt")
+	var counter, total int
+	var max, sec rec
+	for k, v := range m {
+		// fmt.Printf("code: %-30s counts: %-10d\n", k, v)
+		if v > max.count {
+			sec.word = max.word
+			sec.count = max.count
+			max.count = v
+			max.word = k
+		}
+		total += v
+		counter++
 	}
+	fmt.Printf("Total words: %d, \n", counter)
+	fmt.Printf("The number of unique words: %d,\n", total)
+	fmt.Printf("The most frequent: %s, with counts: %d,\n", max.word, max.count)
+	fmt.Printf("The second most frequent: %s, with counts: %d,\n", sec.word, sec.count)
 }
