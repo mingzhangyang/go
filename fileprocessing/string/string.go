@@ -67,3 +67,33 @@ func AllRepeats(s string) map[string][]Indices {
 	}
 	return res
 }
+
+// FindRepeatsWithN find all the segments with N times in a given string
+func FindRepeatsWithN(s string, n int) map[string][]Indices {
+	if len(s) == 0 {
+		log.Panic("empty string")
+	}
+	res := make(map[string][]Indices)
+	var key string
+	var w rune
+	var idx Indices
+	for i, v := range s {
+		if v == w {
+			key += string(v)
+		}
+		if v != w {
+			idx.stop = i
+			if len([]rune(key)) == n {
+				if _, ok := res[key]; !ok {
+					res[key] = []Indices{idx}
+				} else {
+					res[key] = append(res[key], idx)
+				}
+			}
+			key = string(v)
+			w = v
+			idx = Indices{start: i}
+		}
+	}
+	return res
+}
