@@ -1,4 +1,4 @@
-package utils
+package string
 
 // KmpScore calculate the partial matching score for a given ASCII-encoding string
 func KmpScore(s string) []int {
