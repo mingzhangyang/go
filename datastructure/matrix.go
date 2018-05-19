@@ -3,6 +3,7 @@ package datastructure
 import (
 	"fmt"
 	"log"
+	"math/rand"
 )
 
 // Matrix is based on Array
@@ -457,6 +458,71 @@ func (m *Matrix) Multiply(n *Matrix) *Matrix {
 	}
 }
 
+// Copy return a copy of the matrix
+func (m *Matrix) Copy() *Matrix {
+	a := make(Array, len(m.data))
+	copy(a, m.data)
+	return &Matrix{
+		data: a,
+		rows: m.rows,
+		cols: m.cols,
+	}
+}
+
+// Shuffle the rows of the matrix
+func (m *Matrix) Shuffle() *Matrix {
+	idx := make([]int, m.rows)
+	for i := 0; i < m.rows; i++ {
+		idx[i] = i
+	}
+	rand.Shuffle(m.rows, func (i, j int) {
+		idx[i], idx[j] = idx[j], idx[i]
+	})
+	var a = make(Array, len(m.data))
+	var p, q int
+	for j := 0; j < len(idx); j++ {
+		p = m.cols * j
+		q = m.cols * idx[j]
+		for k := 0; k < m.cols; k++ {
+			a[p+k] = m.data[q+k]
+		}
+	}
+	return &Matrix{
+		data: a,
+		rows: m.rows,
+		cols: m.cols,
+	}
+}
+
+// Split the matrix to two subsets with ratio i : j
+// If
+func (m *Matrix) Split(p, q int) (*Matrix, *Matrix) {
+	if p < 0 || q < 0 {
+		log.Panic("invalid ratio, can't be negative")
+	}
+	p = m.rows * p / (p+q)
+	q = m.rows - p
+	t := p * m.cols
+	a := make(Array, t)
+	b := make(Array, q * m.cols)
+	for i := 0; i < len(a); i++ {
+		a[i] = m.data[i]
+	}
+	for j := 0; j < len(b); j++ {
+		b[j] = m.data[t+j]
+	}
+	return &Matrix{
+		data: a,
+		rows: p,
+		cols: m.cols,
+	}, &Matrix{
+		data: b,
+		rows: q,
+		cols: m.cols,
+	}
+}
+
+
 // String make the matrix to be printed as a matrix
 func (m Matrix) String() string {
 	s := "["
@@ -512,12 +578,12 @@ func (m Matrix) String() string {
 
 func printLineMoreThan20(line []float64) string {
 	n := len(line)
-	return fmt.Sprintf("[%16.2f  %16.2f  %16.2f  %16.2f \t...\t...\t...\t%16.2f  %16.2f  %16.2f  %16.2f ]", line[0], line[1], line[2], line[3], line[n-4], line[n-3], line[n-2], line[n-1])
+	return fmt.Sprintf("[%16.2f  %16.2f  %16.2f  %16.2f \t...\t...\t...\t%16.2f  %16.2f  %16.2f  %16.2f%16v", line[0], line[1], line[2], line[3], line[n-4], line[n-3], line[n-2], line[n-1], "]")
 }
 
 func printFixedLineHolder() string {
 	v := "..."
-	return fmt.Sprintf(".%16v  %16v  %16v  %16v \t...\t...\t...\t%16v  %16v  %16v  %16v   .", v, v, v, v, v, v, v, v)
+	return fmt.Sprintf(".%16v  %16v  %16v  %16v \t...\t...\t...\t%16v  %16v  %16v  %12v   .", v, v, v, v, v, v, v, v)
 }
 
 func printLineLessThan20(line []float64) string {
@@ -525,7 +591,7 @@ func printLineLessThan20(line []float64) string {
 	for _, v := range line {
 		s += fmt.Sprintf("%16.2f ", v)
 	}
-	s += "  ]"
+	s += "              ]"
 	return s
 }
 
@@ -533,7 +599,7 @@ func printCustomLineHolder(n int) string {
 	s := "."
 	v := "..."
 	for i := 0; i < n; i++ {
-		s += fmt.Sprintf("%20v ", v)
+		s += fmt.Sprintf("%16v ", v)
 	}
 	s += "  ."
 	return s

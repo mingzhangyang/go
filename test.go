@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 // import "go-learning/neuralnetwork"
-// import ds "go-learning/datastructure"
-import "go-learning/models"
+import ds "go-learning/datastructure"
+// import "go-learning/models"
 
 // func init() {
 // 	fmt.Println("init in main invoked")
@@ -25,9 +25,15 @@ func main() {
 	// fmt.Println(m)
 	// m.ReShape(5, 240)
 	// fmt.Println(m)
-	// a := ds.Array{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-	// m := a.ToMatrix(3, 4)
-	// fmt.Println(*m)
+	a := ds.Array{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+	m := a.ToMatrix(6, 2)
+	fmt.Println(*m)
+	fmt.Println(m.Shuffle())
+	fmt.Println("")
+	x, y := m.Split(1, 2)
+	fmt.Println(*x)
+	fmt.Println(*y)
+
 	// fmt.Println((m.T()))
 	// d := ds.NewDataCube(a, 2, 2, 3)
 
@@ -39,22 +45,22 @@ func main() {
 	// m3 := m1.Multiply(m2)
 	// fmt.Println(*m3)
 
-	m := models.ScanFile("./datasets/pg10.txt")
-	var counter, total int
-	var max, sec rec
-	for k, v := range m {
-		// fmt.Printf("code: %-30s counts: %-10d\n", k, v)
-		if v > max.count {
-			sec.word = max.word
-			sec.count = max.count
-			max.count = v
-			max.word = k
-		}
-		total += v
-		counter++
-	}
-	fmt.Printf("Total words: %d, \n", counter)
-	fmt.Printf("The number of unique words: %d,\n", total)
-	fmt.Printf("The most frequent: %s, with counts: %d,\n", max.word, max.count)
-	fmt.Printf("The second most frequent: %s, with counts: %d,\n", sec.word, sec.count)
+	// m := models.ScanFile("./datasets/pg10.txt")
+	// var counter, total int
+	// var max, sec rec
+	// for k, v := range m {
+	// 	// fmt.Printf("code: %-30s counts: %-10d\n", k, v)
+	// 	if v > max.count {
+	// 		sec.word = max.word
+	// 		sec.count = max.count
+	// 		max.count = v
+	// 		max.word = k
+	// 	}
+	// 	total += v
+	// 	counter++
+	// }
+	// fmt.Printf("Total words: %d, \n", counter)
+	// fmt.Printf("The number of unique words: %d,\n", total)
+	// fmt.Printf("The most frequent: %s, with counts: %d,\n", max.word, max.count)
+	// fmt.Printf("The second most frequent: %s, with counts: %d,\n", sec.word, sec.count)
 }
