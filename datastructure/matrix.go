@@ -421,7 +421,7 @@ func (m *Matrix) Concat(mat *Matrix, axis int) *Matrix {
 	}
 }
 
-// Map is a element wise mapping
+// Map is an element-wise mapping
 // It is better to not change the original matrix in-place
 func (m *Matrix) Map(foo func(float64) float64) *Matrix {
 	a := make(Array, len(m.data))
@@ -494,8 +494,8 @@ func (m *Matrix) Shuffle() *Matrix {
 	}
 }
 
-// Split the matrix to two subsets with ratio i : j
-// If
+// Split the matrix to two subsets with ratio p : q
+// along rows (axis = 0)
 func (m *Matrix) Split(p, q int) (*Matrix, *Matrix) {
 	if p < 0 || q < 0 {
 		log.Panic("invalid ratio, can't be negative")
@@ -520,6 +520,30 @@ func (m *Matrix) Split(p, q int) (*Matrix, *Matrix) {
 		rows: q,
 		cols: m.cols,
 	}
+}
+
+// SplitN split the matrix into n subsets along rows (axis = 0)
+func (m *Matrix) SplitN(n int) []*Matrix {
+	if n < 1 {
+		log.Panic("n should not be less than 1")
+	}
+	var res []*Matrix
+	span := m.rows / n
+	for i := 0; i < n; i++ {
+		res = append(res, &Matrix{
+			data: m.data[i*m.cols*span:(i+1)*m.cols*span],
+			rows: span,
+			cols: m.cols,
+		})
+	}
+	if m.rows > span * n {
+		res = append(res, &Matrix{
+			data: m.data[span*m.cols*n:],
+			rows: m.rows % n,
+			cols: m.cols,
+		})
+	}
+	return res
 }
 
 

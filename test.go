@@ -30,9 +30,13 @@ func main() {
 	fmt.Println(*m)
 	fmt.Println(m.Shuffle())
 	fmt.Println("")
-	x, y := m.Split(1, 2)
-	fmt.Println(*x)
-	fmt.Println(*y)
+	x := m.SplitN(4)
+	fmt.Println(*x[0])
+	fmt.Println(*x[1])
+	fmt.Println(*x[2])
+	fmt.Println(*x[3])
+	fmt.Println(*x[4])
+
 
 	// fmt.Println((m.T()))
 	// d := ds.NewDataCube(a, 2, 2, 3)

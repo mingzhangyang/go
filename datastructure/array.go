@@ -376,6 +376,22 @@ func (a Array) Split(ratio float64) (Array, Array) {
 	return ls, rs
 }
 
+// Bin split an array into N bins
+func (a Array) Bin(n int) []Array {
+	if n < 1 {
+		log.Panic("n should not be less than 1")
+	}
+	d := len(a) / n
+	var res = make([]Array, 0)
+	for i := 0; i < n; i++ {
+		res = append(res, a[i*d:(i+1)*d])
+	}
+	if len(a) > d * n {
+		res = append(res, a[n*d:])
+	}
+	return res
+}
+
 /****************************************************************************
 * Array manipulations: Push, Pop, Insert, Concat, Drop, Splice, Slice, etc.
 * These manipulations return a new Array. If the array is large, it will be
