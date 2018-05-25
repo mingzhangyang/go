@@ -6,8 +6,10 @@ package main
 // import ds "go-learning/datastructure"
 // import "go-learning/models"
 import (
+	"log"
 	"go-learning/utilities"
 	"os"
+	"path/filepath"
 )
 // func init() {
 // 	fmt.Println("init in main invoked")
@@ -72,5 +74,9 @@ func main() {
 	// fmt.Printf("The second most frequent: %s, with counts: %d,\n", sec.word, sec.count)
 	
 	p := os.Args[1]
+	p, err := filepath.Abs(p)
+	if err != nil {
+		log.Fatal("invalid path")
+	}
 	utilities.CSV2JSON(p)
 }
