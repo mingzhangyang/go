@@ -1,11 +1,14 @@
 package main
 
-import "fmt"
+// import "fmt"
 
 // import "go-learning/neuralnetwork"
-import ds "go-learning/datastructure"
+// import ds "go-learning/datastructure"
 // import "go-learning/models"
-
+import (
+	"go-learning/utilities"
+	"os"
+)
 // func init() {
 // 	fmt.Println("init in main invoked")
 // }
@@ -25,17 +28,17 @@ func main() {
 	// fmt.Println(m)
 	// m.ReShape(5, 240)
 	// fmt.Println(m)
-	a := ds.Array{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-	m := a.ToMatrix(6, 2)
-	fmt.Println(*m)
-	fmt.Println(m.Shuffle())
-	fmt.Println("")
-	x := m.SplitN(4)
-	fmt.Println(*x[0])
-	fmt.Println(*x[1])
-	fmt.Println(*x[2])
-	fmt.Println(*x[3])
-	fmt.Println(*x[4])
+	// a := ds.Array{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+	// m := a.ToMatrix(6, 2)
+	// fmt.Println(*m)
+	// fmt.Println(m.Shuffle())
+	// fmt.Println("")
+	// x := m.SplitN(4)
+	// fmt.Println(*x[0])
+	// fmt.Println(*x[1])
+	// fmt.Println(*x[2])
+	// fmt.Println(*x[3])
+	// fmt.Println(*x[4])
 
 
 	// fmt.Println((m.T()))
@@ -67,4 +70,7 @@ func main() {
 	// fmt.Printf("The number of unique words: %d,\n", total)
 	// fmt.Printf("The most frequent: %s, with counts: %d,\n", max.word, max.count)
 	// fmt.Printf("The second most frequent: %s, with counts: %d,\n", sec.word, sec.count)
+	
+	p := os.Args[1]
+	utilities.CSV2JSON(p)
 }
