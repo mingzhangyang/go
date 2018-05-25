@@ -12,16 +12,51 @@ type state struct{
 	ready bool
 }
 
-func splitLine(str, sep string) []string {
+func splitLineA(str string, sep rune, res []string) []string {
 	elem := ""
 	st := state{false, "", false}
-	res := []string{}
+	i := 0
 
-	for _, r := range str {
-		c := string(r)
+	for _, v := range str {
+		switch v {
+		case '"':
+			if st.open {
+				st.open = false
+				st.ready = true
+			} else {
+				st.open = true
+				st.sign = "\""
+			}
+		case sep:
+			if st.open == false {
+				res[i] = strings.TrimSpace(elem)
+				elem = ""
+				i++
+				continue
+			}
+			if st.ready {
+				st.sign = ""
+				st.ready = false
+				res[i] = strings.TrimSpace(elem)
+				elem = ""
+				i++
+			}
+		}
+		elem += string(v)
+	}
 
-		switch c {
-		case "\"":
+	res[i] = strings.TrimSpace(elem)
+	return res
+}
+
+func splitLineB(str string, sep rune) []string {
+	elem := ""
+	st := state{false, "", false}
+	i := 0
+	res := make([]string, 0)
+	for _, v := range str {
+		switch v {
+		case '"':
 			if st.open {
 				st.open = false
 				st.ready = true
@@ -33,6 +68,7 @@ func splitLine(str, sep string) []string {
 			if st.open == false {
 				res = append(res, strings.TrimSpace(elem))
 				elem = ""
+				i++
 				continue
 			}
 			if st.ready {
@@ -40,9 +76,10 @@ func splitLine(str, sep string) []string {
 				st.ready = false
 				res = append(res, strings.TrimSpace(elem))
 				elem = ""
+				i++
 			}
 		}
-		elem += c
+		elem += string(v)
 	}
 
 	res = append(res, strings.TrimSpace(elem))

@@ -5,7 +5,7 @@ import (
 	"os"
 	"log"
 	"fmt"
-	"runtime"
+	//"runtime"
 )
 
 func combine(headers, values []string) string {
@@ -23,15 +23,17 @@ func combine(headers, values []string) string {
 
 // CSV2JSON create JSON from CSV
 func CSV2JSON(path string) {
-	fmt.Println(runtime.NumCPU())
+	// fmt.Println(runtime.NumCPU())
 	c, err := os.Open(path)
 	if err != nil {
-		log.Panic(err)
+		fmt.Println(err)
+		log.Panic("failed to open file")
 	}
 	defer c.Close()
 	j, err := os.Create(path + ".JSON")
 	if err != nil {
-		log.Panic(err)
+		fmt.Println(err)
+		log.Panic("failed to create file")
 	}
 	defer j.Close()
 	sc := bufio.NewScanner(c)
@@ -40,7 +42,7 @@ func CSV2JSON(path string) {
 	done := make(chan bool)
 	var counter int
 	var line string
-	var headers []string
+	var headers, fields []string
 	go func() {
 		for fields := range ch {
 			wr.WriteString(",\n" + combine(headers, fields))
@@ -52,14 +54,15 @@ func CSV2JSON(path string) {
 			line = sc.Text()
 			switch {
 			case counter > 1:
-				ch <- splitLine(line, ",")		
+				ch <- splitLineA(line, ',', fields)		
 			default:
 				switch counter {
 				case 0:
-					headers = splitLine(line, ",")
+					headers = splitLineB(line, ',')
 					wr.WriteString("[\n")
+					fields = make([]string, len(headers))
 				case 1:
-					fields := splitLine(line, ",")
+					fields := splitLineA(line, ',', fields)
 					wr.WriteString(combine(headers, fields))
 				}
 			}
@@ -74,7 +77,8 @@ func CSV2JSON(path string) {
 	wr.WriteString("\n]")
 	err = wr.Flush()
 	if err != nil {
-		log.Panic(err)
+		fmt.Println(err)
+		log.Panic("failed to flush")
 	}
 	fmt.Printf("Convertion done, %d lines parsed.\n", counter-1)
 }
