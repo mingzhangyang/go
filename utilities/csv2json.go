@@ -10,7 +10,10 @@ import (
 
 func combine(headers, values []string) string {
 	if len(headers) != len(values) {
-		log.Panic("values in the line not matched with headers")
+		fmt.Printf("header: %d, line: %d\n", len(headers), len(values))
+		fmt.Println(values);
+		// log.Panic("values in the line not matched with headers")
+		return ""
 	}
 	res := "{"
 	for i := range headers {
@@ -44,7 +47,7 @@ func CSV2JSON(path string) {
 	var line string
 	var headers, fields []string
 	go func() {
-		for fields := range ch {
+		for fields = range ch {
 			wr.WriteString(",\n" + combine(headers, fields))
 		}
 		close(done)
@@ -54,15 +57,16 @@ func CSV2JSON(path string) {
 			line = sc.Text()
 			switch {
 			case counter > 1:
-				ch <- splitLineA(line, ',', fields)		
+				ch <- splitLine(line, ',')		
 			default:
 				switch counter {
 				case 0:
-					headers = splitLineB(line, ',')
+					headers = splitLine(line, ',')
 					wr.WriteString("[\n")
 					fields = make([]string, len(headers))
+					// fmt.Println(len(fields))
 				case 1:
-					fields := splitLineA(line, ',', fields)
+					fields = splitLine(line, ',')
 					wr.WriteString(combine(headers, fields))
 				}
 			}

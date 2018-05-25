@@ -1,88 +1,28 @@
 package utilities
 
-import(
-	//"fmt"
-	//"os"
-	"strings"
-)
-
-type state struct{
-	open bool
-	sign string
-	ready bool
-}
-
-func splitLineA(str string, sep rune, res []string) []string {
+func splitLine(str string, sep rune) []string {
 	elem := ""
-	st := state{false, "", false}
-	i := 0
-
-	for _, v := range str {
-		switch v {
-		case '"':
-			if st.open {
-				st.open = false
-				st.ready = true
-			} else {
-				st.open = true
-				st.sign = "\""
-			}
-		case sep:
-			if st.open == false {
-				res[i] = strings.TrimSpace(elem)
-				elem = ""
-				i++
-				continue
-			}
-			if st.ready {
-				st.sign = ""
-				st.ready = false
-				res[i] = strings.TrimSpace(elem)
-				elem = ""
-				i++
-			}
-		}
-		elem += string(v)
-	}
-
-	res[i] = strings.TrimSpace(elem)
-	return res
-}
-
-func splitLineB(str string, sep rune) []string {
-	elem := ""
-	st := state{false, "", false}
-	i := 0
+	var st int
 	res := make([]string, 0)
 	for _, v := range str {
 		switch v {
 		case '"':
-			if st.open {
-				st.open = false
-				st.ready = true
+			if st == 0 {
+				st++
 			} else {
-				st.open = true
-				st.sign = "\""
+				st--
 			}
 		case sep:
-			if st.open == false {
-				res = append(res, strings.TrimSpace(elem))
+			if st == 0 {
+				res = append(res, elem)
 				elem = ""
-				i++
 				continue
-			}
-			if st.ready {
-				st.sign = ""
-				st.ready = false
-				res = append(res, strings.TrimSpace(elem))
-				elem = ""
-				i++
 			}
 		}
 		elem += string(v)
 	}
 
-	res = append(res, strings.TrimSpace(elem))
+	res = append(res, elem)
 	return res
 }
 
