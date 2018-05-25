@@ -6,6 +6,7 @@ import (
 	"log"
 	"fmt"
 	//"runtime"
+	"encoding/json"
 )
 
 func combine(headers, values []string) string {
@@ -46,9 +47,26 @@ func CSV2JSON(path string) {
 	var counter int
 	var line string
 	var headers, fields []string
+	var m = make(map[string]string)
 	go func() {
 		for fields = range ch {
-			wr.WriteString(",\n" + combine(headers, fields))
+			if len(headers) != len(fields) {
+				log.Println("failed to match the header")
+				fmt.Println(line)
+				continue
+			}
+			for i := range headers {
+				m[headers[i]] = fields[i]
+			}
+			b, err := json.Marshal(m)
+			if err != nil {
+				log.Println("failed to marshal the map")
+				fmt.Println(line)
+				continue
+			}
+			wr.Write([]byte(",\n"))
+			wr.Write(b)
+			// wr.WriteString(",\n" + combine(headers, fields))
 		}
 		close(done)
 	}()
@@ -62,12 +80,26 @@ func CSV2JSON(path string) {
 				switch counter {
 				case 0:
 					headers = splitLine(line, ',')
-					wr.WriteString("[\n")
-					fields = make([]string, len(headers))
+					wr.Write([]byte("[\n"))
 					// fmt.Println(len(fields))
 				case 1:
 					fields = splitLine(line, ',')
-					wr.WriteString(combine(headers, fields))
+					if len(headers) != len(fields) {
+						log.Println("failed to match the header")
+						fmt.Println(line)
+						continue
+					}
+					for i := range headers {
+						m[headers[i]] = fields[i]
+					}
+					b, err := json.Marshal(m)
+					if err != nil {
+						log.Println("failed to marshal the map")
+						fmt.Println(line)
+						continue
+					}
+					wr.Write(b)
+					// wr.WriteString(combine(headers, fields))
 				}
 			}
 			counter++
