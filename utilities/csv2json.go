@@ -7,22 +7,26 @@ import (
 	"fmt"
 	//"runtime"
 	"encoding/json"
+	"errors"
 )
 
-func combine(headers, values []string) string {
-	if len(headers) != len(values) {
-		fmt.Printf("header: %d, line: %d\n", len(headers), len(values))
-		fmt.Println(values);
-		// log.Panic("values in the line not matched with headers")
-		return ""
+func parseLine(m map[string]string, line []byte, headers []string) ([]byte, error) {
+	fields := splitBytes(line, byte(','))
+	if len(headers) != len(fields) {
+		log.Printf("headers: %d, fields: %d\n", len(headers), len(fields))
+		fmt.Println(fields)
+		return []byte(""), errors.New("not match")
 	}
-	res := "{"
 	for i := range headers {
-		res += "\"" + headers[i] + "\":\"" + values[i] + "\","
-	
+		m[headers[i]] = fields[i]
 	}
-	res = string(res[:len(res)-1])
-	return res + "}"
+	b, err := json.Marshal(m)
+	if err != nil {
+		log.Println("failed to marshal the map")
+		fmt.Println(fields)
+		return []byte(""), errors.New("Marshal failed")
+	}
+	return b, nil
 }
 
 // CSV2JSON create JSON from CSV
@@ -42,79 +46,48 @@ func CSV2JSON(path string) {
 	defer j.Close()
 	sc := bufio.NewScanner(c)
 	wr := bufio.NewWriter(j)
-	ch := make(chan []string, 10)
-	done := make(chan bool)
 	var counter int
-	var line string
-	var headers, fields []string
+	var line []byte
+	var headers []string
 	var m = make(map[string]string)
-	go func() {
-		for fields = range ch {
-			if len(headers) != len(fields) {
-				log.Println("failed to match the header")
-				fmt.Println(line)
-				continue
-			}
-			for i := range headers {
-				m[headers[i]] = fields[i]
-			}
-			b, err := json.Marshal(m)
+
+	for sc.Scan() {
+		line = sc.Bytes()
+		switch {
+		case counter > 1:
+			b, err := parseLine(m, line, headers)
 			if err != nil {
-				log.Println("failed to marshal the map")
+				log.Printf("#%d line parsing failed\n", counter)
 				fmt.Println(line)
-				continue
 			}
 			wr.Write([]byte(",\n"))
-			wr.Write(b)
-			// wr.WriteString(",\n" + combine(headers, fields))
-		}
-		close(done)
-	}()
-	go func() {
-		for sc.Scan() {
-			line = sc.Text()
-			switch {
-			case counter > 1:
-				ch <- splitLine(line, ',')		
-			default:
-				switch counter {
-				case 0:
-					headers = splitLine(line, ',')
-					wr.Write([]byte("[\n"))
-					// fmt.Println(len(fields))
-				case 1:
-					fields = splitLine(line, ',')
-					if len(headers) != len(fields) {
-						log.Println("failed to match the header")
-						fmt.Println(line)
-						continue
-					}
-					for i := range headers {
-						m[headers[i]] = fields[i]
-					}
-					b, err := json.Marshal(m)
-					if err != nil {
-						log.Println("failed to marshal the map")
-						fmt.Println(line)
-						continue
-					}
-					wr.Write(b)
-					// wr.WriteString(combine(headers, fields))
+			wr.Write(b)	
+		default:
+			switch counter {
+			case 0:
+				headers = splitBytes(line, byte(','))
+				wr.Write([]byte("[\n"))
+			case 1:
+				b, err := parseLine(m, line, headers)
+				if err != nil {
+					log.Printf("#%d line parsing failed\n", counter)
+					fmt.Println(line)
 				}
+				wr.Write([]byte(",\n"))
+				wr.Write(b)	
 			}
-			counter++
 		}
-		if err := sc.Err(); err != nil {
-			log.Panic(err)
-		}
-		close(ch)
-	}()
-	<- done
-	wr.WriteString("\n]")
+		counter++
+	}
+	if err := sc.Err(); err != nil {
+		log.Panic(err)
+	}
+	
+	wr.Write([]byte("\n]"))
 	err = wr.Flush()
 	if err != nil {
 		fmt.Println(err)
 		log.Panic("failed to flush")
 	}
-	fmt.Printf("Convertion done, %d lines parsed.\n", counter-1)
+	fmt.Printf("\nConvertion done, %d lines parsed.\n", counter-1)
 }
