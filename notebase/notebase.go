@@ -5,16 +5,20 @@ package notebase
 * This is to mimic implementation of inverted indexing in Solr.
 ******************************************************************************/
 
-// Keywords store key words in int format
+// wordbase store key words in int format
 type wordbase struct {
 	data map[string]uint
-	mark uint // the maximum index, the number of words stored
+	cur uint // 
 }
 
 func (wb *wordbase) add(s string) uint {
-	wb.mark++
-	wb.data[s] = wb.mark
-	return wb.mark
+	v, ok := wb.data[s]
+	if !ok {
+		wb.cur++
+		wb.data[s] = wb.cur
+		return wb.cur
+	}
+	return v
 }
 
 // if the word is in the wordbase, a positive int number will be returned
