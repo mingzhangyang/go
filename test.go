@@ -78,5 +78,5 @@ func main() {
 	if err != nil {
 		log.Fatal("invalid path")
 	}
-	utilities.CSV2JSON(p)
+	utilities.CSV2JSON1(p)
 }

@@ -71,6 +71,91 @@ func CSV2JSON(path string) {
 				b, err := parseLine(m, line, headers)
 				if err != nil {
 					log.Printf("#%d line parsing failed\n", counter)
+					fmt.Println(string(line))
+				}
+				wr.Write([]byte(",\n"))
+				wr.Write(b)	
+			}
+		}
+		counter++
+	}
+	if err := sc.Err(); err != nil {
+		log.Panic(err)
+	}
+	
+	wr.Write([]byte("\n]"))
+	err = wr.Flush()
+	if err != nil {
+		fmt.Println(err)
+		log.Panic("failed to flush")
+	}
+	fmt.Printf("\nConvertion done, %d lines parsed.\n", counter-1)
+}
+
+func parseLine1(m map[string]string, fields []string, headers []string) ([]byte, error) {
+	if len(headers) != len(fields) {
+		log.Printf("headers: %d, fields: %d\n", len(headers), len(fields))
+		fmt.Println(fields)
+		return []byte(""), errors.New("not match")
+	}
+	for i := range headers {
+		m[headers[i]] = fields[i]
+	}
+	b, err := json.Marshal(m)
+	if err != nil {
+		log.Println("failed to marshal the map")
+		fmt.Println(fields)
+		return []byte(""), errors.New("Marshal failed")
+	}
+	return b, nil
+}
+
+// CSV2JSON1 use splitLine1
+func CSV2JSON1(path string) {
+	// fmt.Println(runtime.NumCPU())
+	c, err := os.Open(path)
+	if err != nil {
+		fmt.Println(err)
+		log.Panic("failed to open file")
+	}
+	defer c.Close()
+	j, err := os.Create(path + ".JSON")
+	if err != nil {
+		fmt.Println(err)
+		log.Panic("failed to create file")
+	}
+	defer j.Close()
+	sc := bufio.NewScanner(c)
+	wr := bufio.NewWriter(j)
+	var counter int
+	var line string
+	var headers []string
+	var fields []string
+	var m = make(map[string]string)
+
+	for sc.Scan() {
+		line = sc.Text()
+		switch {
+		case counter > 1:
+			splitLine1(&fields, line, ',')
+			b, err := parseLine1(m, fields, headers)
+			if err != nil {
+				log.Printf("#%d line parsing failed\n", counter)
+				fmt.Println(line)
+			}
+			wr.Write([]byte(",\n"))
+			wr.Write(b)	
+		default:
+			switch counter {
+			case 0:
+				headers = splitLine(line, ',')
+				fields = make([]string, len(headers))
+				wr.Write([]byte("[\n"))
+			case 1:
+				splitLine1(&fields, line, ',')
+				b, err := parseLine1(m, fields, headers)
+				if err != nil {
+					log.Printf("#%d line parsing failed\n", counter)
 					fmt.Println(line)
 				}
 				wr.Write([]byte(",\n"))
