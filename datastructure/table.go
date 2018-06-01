@@ -8,19 +8,46 @@ const (
 	leastNumberOfRows = 64
 )
 
+// Record is self-describing
+type Record struct {
+	Value interface{}
+	Type string
+}
+
+// Column is self-describing
+type Column struct {
+	Name string
+	Type string
+	Data []interface{}
+}
+
+// GetRecord get a record from the column
+func (c Column) GetRecord (ids []int) []*Record {
+	res := make([]*Record, len(ids))
+	for i := range ids {
+		res[i] = &Record{
+			Value: c.Data[i],
+			Type: c.Type,
+		}
+	}
+	return res
+}
+
 // Schema is the configuration of the table
 type Schema map[string]string
 
 // Table is a collection of columns
-type Table struct {
-	
-}
+type Table []Column
 
 // NewTable return a table with n columns
 func NewTable(n int) Table {
 	res := make(Table, n)
 	for i := range res {
-		res[i] = make(Column, leastNumberOfRows)
+		res[i] = Column{
+			Name: "",
+			Type: "",
+			Data: make([]interface{}, leastNumberOfRows),
+		}
 	}
 	return res
 }
@@ -31,6 +58,6 @@ func (t Table) InsertRow(row []interface{}) {
 		log.Panic("fields in the row not matched with columns")
 	}
 	for i := range row {
-		t[i] = append(t[i], row[i])
+		t[i].Data = append(t[i].Data, row[i])
 	}
 }
