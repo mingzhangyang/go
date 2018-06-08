@@ -1,5 +1,9 @@
 package datastructure
 
+import (
+	"fmt"
+)
+
 // Queue type definition
 type Queue struct {
 	head   *Node
@@ -108,4 +112,76 @@ func (q Queue) String() string {
 	// 		str += (" - " + n.Value)
 	// 	}
 	return str
+}
+
+// QueueA implement queue structure with slice
+type QueueA struct {
+	internal []interface{}
+	head, tail int
+}
+
+// NewQueueA create a new queueA and return it address
+func NewQueueA() *QueueA{
+	return &QueueA{
+		internal: make([]interface{}, 256),
+		head: 0,
+		tail: 0,
+	}
+}
+
+// IsEmpty tell whether the queueA is empty
+func (q *QueueA) IsEmpty() bool {
+	return q.tail == q.head
+}
+
+// recycle slide the internal slice to start to reuse the space
+func (q *QueueA) recycle() {
+	copy(q.internal, q.internal[q.head:q.tail])
+	q.tail -= q.head
+	q.head = 0
+}
+
+// extend the internal slice only when it is full
+func (q *QueueA) extend() {
+	s := make([]interface{}, 2 * len(q.internal))
+	copy(s, q.internal)
+	q.internal = s
+}
+
+// Enqueue add an element to the tail of the queue
+func (q *QueueA) Enqueue(e interface{}) {
+	if q.tail < len(q.internal) {
+		q.internal[q.tail] = e
+		q.tail++
+		return
+	}
+	// below is when q.tail == len(q.internal)
+	if q.head > 0 {
+		q.recycle()
+		q.internal[q.tail] = e
+		q.tail++
+	} else {
+		q.extend()
+		q.internal[q.tail] = e
+		q.tail++
+	}
+}
+
+// Dequeue remove an element from the head of the queue
+func (q *QueueA) Dequeue() (interface{}, bool) {
+	if q.IsEmpty() {
+		return nil, false
+	}
+	v := q.internal[q.head]
+	q.head++
+	return v, true
+}
+
+// Length is the number of elements in the queue
+func (q *QueueA) Length() int {
+	return q.tail - q.head
+}
+
+func (q QueueA) String() string {
+	return fmt.Sprint(q.internal[q.head:q.tail])
 }
