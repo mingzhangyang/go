@@ -1,24 +1,24 @@
 package main
 
-// import "fmt"
+import "fmt"
 
 // import "go-learning/neuralnetwork"
-// import ds "go-learning/datastructure"
+import ds "go-learning/datastructure"
 // import "go-learning/models"
-import (
-	"log"
-	"go-learning/utilities"
-	"os"
-	"path/filepath"
-)
+// import (
+// 	"log"
+// 	"go-learning/utilities"
+// 	"os"
+// 	"path/filepath"
+// )
 // func init() {
 // 	fmt.Println("init in main invoked")
 // }
 
-type rec struct {
-	word string
-	count int
-}
+// type rec struct {
+// 	word string
+// 	count int
+// }
 
 func main() {
 	// fmt.Println("main invoked")
@@ -73,10 +73,18 @@ func main() {
 	// fmt.Printf("The most frequent: %s, with counts: %d,\n", max.word, max.count)
 	// fmt.Printf("The second most frequent: %s, with counts: %d,\n", sec.word, sec.count)
 	
-	p := os.Args[1]
-	p, err := filepath.Abs(p)
-	if err != nil {
-		log.Fatal("invalid path")
-	}
-	utilities.CSV2JSON1(p)
+	// p := os.Args[1]
+	// p, err := filepath.Abs(p)
+	// if err != nil {
+	// 	log.Fatal("invalid path")
+	// }
+	// utilities.CSV2JSON1(p)
+
+		ll := ds.NewLinkedList()
+		fmt.Println(ll)
+		for i := 0; i < 10; i++ {
+			ll.Append(&ds.Node{i, nil})
+		}
+		ll.InsertAtIndex(&ds.Node{100, nil}, 4)
+		fmt.Println(ll)
 }
