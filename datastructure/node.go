@@ -58,3 +58,23 @@ func (n *Float64BNode) ToArray() []float64 {
 	}
 	return append(n.left.ToArray(), append([]float64{n.value}, n.right.ToArray()...)...)
 }
+
+// Revert a node
+func (n *Float64BNode) Revert() {
+	if n.left == nil && n.right == nil {
+		return
+	}
+	if n.left != nil && n.right == nil {
+		n.right.Revert()
+		n.left, n.right = n.right, n.left
+		return
+	}
+	if n.left == nil && n.right != nil {
+		n.left.Revert()
+		n.left, n.right = n.right, n.left
+		return
+	}
+	n.right.Revert()
+	n.left.Revert()
+	n.left, n.right = n.right, n.left
+}
