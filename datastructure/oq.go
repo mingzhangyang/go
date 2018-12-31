@@ -24,7 +24,7 @@ func NewOQ(n int) OrderedQueue {
 }
 
 // Add an element into the queue
-func (oq OrderedQueue) Add(elem interface{}, cmp Cmp) bool {
+func (oq *OrderedQueue) Add(elem interface{}, cmp Cmp) bool {
 	switch {
 	case oq.cur == 0:
 		oq.cur = 1
@@ -43,8 +43,12 @@ func (oq OrderedQueue) Add(elem interface{}, cmp Cmp) bool {
 			if i == oq.len - 1 {
 				return false
 			}
+			oq.cur++
 			oq.arr[i+1] = elem
 			return true
+		}
+		if oq.cur < oq.len-1 {
+			oq.cur++
 		}
 		copy(oq.arr[i+2:], oq.arr[i+1:])
 		oq.arr[i+1] = elem
