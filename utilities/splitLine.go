@@ -1,5 +1,9 @@
 package utilities
 
+import (
+	"strings"
+)
+
 func splitLine(str string, sep rune) []string {
 	elem := ""
 	var st int
@@ -14,7 +18,7 @@ func splitLine(str string, sep rune) []string {
 			}
 		case sep:
 			if st == 0 {
-				res = append(res, elem)
+				res = append(res, strings.TrimSpace(elem))
 				elem = ""
 				continue
 			}
@@ -22,7 +26,7 @@ func splitLine(str string, sep rune) []string {
 		elem += string(v)
 	}
 
-	res = append(res, elem)
+	res = append(res, strings.TrimSpace(elem))
 	return res
 }
 
