@@ -121,31 +121,23 @@ func (q *IntOQ) Through(list []int) []int {
 	} else {
 		for idx, length := 1, len(list); idx < length; idx++ {
 			var v = list[idx]
-			if q.arr[0] <= v {
+			if q.arr[q.cur] >= v {
 				if q.cur < q.len-1 {
 					q.cur++
+					q.arr[q.cur] = v
 				}
-				copy(q.arr[1:], q.arr[0:])
-				q.arr[0] = v
 			} else {
-				if q.arr[q.cur] >= v {
-					if q.cur < q.len-1 {
-						q.cur++
-						q.arr[q.cur] = v
-					}
+				if q.cur < q.len-1 {
+					q.cur++
+					q.arr[q.cur] = v
 				} else {
-					if q.cur < q.len-1 {
-						q.cur++
-						q.arr[q.cur] = v
+					q.arr[q.cur] = v
+				}
+				for i := q.cur; i > 0; i-- {
+					if q.arr[i] > q.arr[i-1] {
+						q.arr[i-1], q.arr[i] = q.arr[i], q.arr[i-1]
 					} else {
-						q.arr[q.cur] = v
-					}
-					for i := q.cur; i > 0; i-- {
-						if q.arr[i] > q.arr[i-1] {
-							q.arr[i-1], q.arr[i] = q.arr[i], q.arr[i-1]
-						} else {
-							break
-						}
+						break
 					}
 				}
 			}
