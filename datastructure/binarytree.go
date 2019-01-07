@@ -2,7 +2,7 @@ package datastructure
 
 // BinaryTree data structure
 type BinaryTree struct {
-	root *BNode
+	root *Float64BNode
 }
 
 // NewBinaryTree create a BinaryTree instance
