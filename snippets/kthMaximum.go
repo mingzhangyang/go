@@ -9,27 +9,54 @@ func kthMaximum(a []int, k int) []int {
 	if len(a) == 0 {
 		log.Panic("empty array")
 	}
+	if k <= 0 {
+		log.Panic("k should be greater than 0")
+	}
 	res := make([]int, k)
 	res[0] = a[0]
-	for i := 1; i < len(a); i++ {
+	n := 0
+	for i, max := 1, len(a); i < max; i++ {
 		// fmt.Println(res)
-		if a[i] > res[0] {
-			copy(res[1:], res)
-			res[0] = a[i]
-			continue
-		}
-		for j := 1; j < k; j++ {
-			if a[i] >= res[j] && a[i] <= res[j-1] {
-				if j == k-1 {
-					res[j] = a[i]
+		// if a[i] > res[0] {
+		// 	copy(res[1:], res)
+		// 	res[0] = a[i]
+		// 	continue
+		// }
+		// for j := 1; j < k; j++ {
+		// 	if a[i] >= res[j] && a[i] <= res[j-1] {
+		// 		if j == k-1 {
+		// 			res[j] = a[i]
+		// 		} else {
+		// 			copy(res[j+1:], res[j:])
+		// 			res[j] = a[i]
+		// 		}
+		// 		break
+		// 	}
+		// }
+
+		// the method below works shu-tu-tong-gui as above
+		if a[i] <= res[n] {
+			if n == k-1 {
+				continue
+			} else {
+				n++
+				res[n] = a[i]
+			}
+		} else {
+			if n == k-1 {
+				res[n] = a[i]
+			} else {
+				n++
+				res[n] = a[i]
+			}
+			for h := n; h > 0; h-- {
+				if res[h] > res[h-1] {
+					res[h], res[h-1] = res[h-1], res[h]
 				} else {
-					copy(res[j+1:], res[j:])
-					res[j] = a[i]
+					break
 				}
-				break
 			}
 		}
-		
 	}
 	return res
 }
