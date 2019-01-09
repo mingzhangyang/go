@@ -11,6 +11,7 @@ func abs(n float64) float64 {
 	return n
 }
 
+// if list contains negative number, plus a postive one to make all elements positive
 func part(list []int, target, err float64) []int {
 	if target < 0 {
 		if abs(target) <= abs(err) {
@@ -21,6 +22,10 @@ func part(list []int, target, err float64) []int {
 	
 
 	if target == 0 {
+		return []int{}
+	}
+
+	if target <= abs(err) {
 		return []int{}
 	}
 	
