@@ -82,6 +82,18 @@ func (q *IntOQ) reset() {
 	q.cur = 0
 }
 
+// IsEmpty tell whether the queue is empty
+func (q *IntOQ) IsEmpty() bool {
+	return q.cur == 0
+}
+
+// IsFull tell whether the queue is full
+func (q *IntOQ) IsFull() bool {
+	return q.cur == q.len - 1
+}
+
+// Insert an element into the queue
+
 // Through feed a list of int numbers
 func (q *IntOQ) Through(list []int) []int {
 	// reset the oq
